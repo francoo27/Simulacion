@@ -54,11 +54,12 @@ def getVarianza(tirada):
     varianzaArr = []
     c = 1
     tiradaLenght =  len(tirada)
-    print(tiradaLenght)
     while c < tiradaLenght:
         varianzaArr.append(np.var(tirada[0:c]))
         c +=1
     return varianzaArr
+def getDesviacion(tirada):
+    return np.sqrt(getVarianza(tirada))
 ################ MAIN LOOP ################
 inputNumber = getInput()
 tirada = getTirada(Constant.TIRADAS,Constant.CANTMONTECARLO)
@@ -79,6 +80,10 @@ plt.show()
 #Grafica varianza
 plt.figure()
 plt.plot(getVarianza(tirada)) 
+plt.show()
+#Grafica desviacion
+plt.figure()
+plt.plot(getDesviacion(tirada)) 
 plt.show()
 #Lista completa de tiradas
 #for i in (lista):
