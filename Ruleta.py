@@ -68,31 +68,56 @@ def getVarianza(tirada):
 def getDesviacion(tirada):
     return np.sqrt(getVarianza(tirada))
 
+
+def getDesviasionRespectoALaMedia(input, tirada):
+    c = 0
+    promedio = 0
+    DesvRespMedia = []
+    for i in tirada:
+        c += 1
+        promedio = promedio + i
+        media = promedio/c
+        DesvRespMedia.append(input-media)
+    return DesvRespMedia
+
 ################ MAIN LOOP ################
 inputNumber = getInput()
 tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 
 # Grafica frecuencia relativa
-plt.plot(getFrecuenciaRelativa(tirada, inputNumber))
-plt.show()
+# plt.plot(getFrecuenciaRelativa(tirada, inputNumber))
+# plt.show()
 
 # Grafica valor promedio
-plt.figure()
-plt.plot([-100, Constant.TIRADAS], [18, 18], 'r-o')
-plt.plot(getValorPromedio(tirada))
-plt.annotate('Valor promedio esperado',color='red', xy=(Constant.TIRADAS/2, 17.95), xytext=(Constant.TIRADAS/2, 19),
-             arrowprops=dict(facecolor='red', edgecolor='red', shrink=0.05),
-             )
-plt.show()
+# plt.figure()
+# plt.plot([-100, Constant.TIRADAS], [18, 18], 'r-o')
+# plt.plot(getValorPromedio(tirada))
+# plt.annotate('Valor promedio esperado',color='red', xy=(Constant.TIRADAS/2, 17.95), xytext=(Constant.TIRADAS/2, 19),
+#              arrowprops=dict(facecolor='red', edgecolor='red', shrink=0.05),
+#              )
+# plt.show()
 
 # Grafica varianza
-plt.figure()
-plt.plot(getVarianza(tirada))
-plt.show()
+# plt.figure()
+# plt.plot(getVarianza(tirada))
+# plt.show()
+
+
 # Grafica desviacion
+# plt.figure()
+# plt.plot(getDesviacion(tirada))
+# plt.show()
+
+# Grafica desviasion respecto a la media
 plt.figure()
-plt.plot(getDesviacion(tirada))
+plt.plot((inputNumber, tirada))
 plt.show()
+
+
 # Lista completa de tiradas
 # for i in (lista):
 #    print (lista[i])
+
+# plt.suptitle('%i Tiradas' % n)
+# plt.ylabel('S (desvio)')
+# plt.xlabel('n (Numero de tiradas)')
