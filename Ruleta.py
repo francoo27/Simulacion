@@ -4,10 +4,11 @@ import random
 
 
 class Constant:
-    TIRADAS = 50000
+    TIRADAS = 10000
     CANTMONTECARLO = 36
 #Valor del desvio del .... ???
-
+colors = ['red','blue','green','yellow','purple']
+color = ['r','b','g','y','p']
 #Valor de la varianza del numero X(6) con respecto a N
 #varianza6 = []
 def getInput():
@@ -48,6 +49,16 @@ def getTirada(quantity,maxValue):
         #Obtener valor random dentro de el rango y añadirlo a la lista
         tirada.append(random.randint(0,maxValue))
     return tirada
+
+def getVarianza(tirada):
+    varianzaArr = []
+    c = 1
+    tiradaLenght =  len(tirada)
+    print(tiradaLenght)
+    while c < tiradaLenght:
+        varianzaArr.append(np.var(tirada[0:c]))
+        c +=1
+    return varianzaArr
 ################ MAIN LOOP ################
 inputNumber = getInput()
 tirada = getTirada(Constant.TIRADAS,Constant.CANTMONTECARLO)
@@ -55,8 +66,9 @@ tirada = getTirada(Constant.TIRADAS,Constant.CANTMONTECARLO)
 #Grafica frecuencia relativa
 plt.plot(getFrecuenciaRelativa(tirada,inputNumber))
 plt.show()
-plt.figure()
+
 #Grafica valor promedio
+plt.figure()
 plt.plot([-100,Constant.TIRADAS],[18,18],'r-o')
 plt.plot( getValorPromedio(tirada)  )
 plt.annotate('Valor promedio esperado',color = 'red', xy = (Constant.TIRADAS/2, 17.95), xytext = (Constant.TIRADAS/2, 19),
@@ -64,6 +76,10 @@ plt.annotate('Valor promedio esperado',color = 'red', xy = (Constant.TIRADAS/2, 
              )
 plt.show()
 
+#Grafica varianza
+plt.figure()
+plt.plot(getVarianza(tirada)) 
+plt.show()
 #Lista completa de tiradas
 #for i in (lista):
 #    print (lista[i])
