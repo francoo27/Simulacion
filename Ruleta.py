@@ -59,7 +59,7 @@ plt.figure()
 #Grafica valor promedio
 plt.plot([-100,Constant.TIRADAS],[18,18],'r-o')
 plt.plot( getValorPromedio(tirada)  )
-plt.annotate('Valor promedio esperado',color = 'red', xy = (Constant.CANTMONTECARLO/2, 17.95), xytext = (Constant.CANTMONTECARLO/2, 19),
+plt.annotate('Valor promedio esperado',color = 'red', xy = (Constant.TIRADAS/2, 17.95), xytext = (Constant.TIRADAS/2, 19),
              arrowprops=dict(facecolor = 'red',edgecolor = 'red', shrink = 0.05),
              )
 plt.show()
