@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import pandas as pd
 
 
 class Constant:
-    TIRADAS = 10000
+    TIRADAS = 50000
     CANTMONTECARLO = 36
 
 
@@ -80,6 +81,16 @@ def getDesviasionRespectoALaMedia(input, tirada):
         DesvRespMedia.append(input-media)
     return DesvRespMedia
 
+def getFrecuenciaAbsoluta(tirada):
+    frecAbs = {}  
+    for t in tirada:
+        if t not in frecAbs.keys():
+            frecAbs[t] = 1
+        else:
+            frecAbs[t] =   frecAbs[t] + 1        
+    return frecAbs
+
+
 ################ MAIN LOOP ################
 inputNumber = getInput()
 tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
@@ -109,9 +120,9 @@ tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 # plt.show()
 
 # Grafica desviasion respecto a la media
-plt.figure()
-plt.plot((inputNumber, tirada))
-plt.show()
+# plt.figure()
+# plt.plot(getDesviasionRespectoALaMedia(inputNumber, tirada))
+# plt.show()
 
 
 # Lista completa de tiradas
@@ -121,3 +132,12 @@ plt.show()
 # plt.suptitle('%i Tiradas' % n)
 # plt.ylabel('S (desvio)')
 # plt.xlabel('n (Numero de tiradas)')
+
+# GRafica frecuencia absoluta (en barras)
+langs = ["Tiradas"]
+data = getFrecuenciaAbsoluta(tirada)
+df = pd.DataFrame(data, index=langs).transpose()
+plt.bar(df.index, df["Tiradas"])
+plt.title("titulo")
+plt.xticks(df.index)
+plt.show()
