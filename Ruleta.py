@@ -134,10 +134,19 @@ tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 # plt.xlabel('n (Numero de tiradas)')
 
 # GRafica frecuencia absoluta (en barras)
+
+threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
+fig,ax = plt.subplots()
+ax.plot([0, 37], [threshold, threshold], "k--")
+
 langs = ["Tiradas"]
 data = getFrecuenciaAbsoluta(tirada)
 df = pd.DataFrame(data, index=langs).transpose()
 plt.bar(df.index, df["Tiradas"])
-plt.title("titulo")
 plt.xticks(df.index)
+
+plt.suptitle('Frecuencia Absoluta')
+plt.ylabel('Cantidad de tiradas')
+plt.xlabel('Numeros de la ruleta')
+
 plt.show()
