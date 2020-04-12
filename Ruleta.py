@@ -81,43 +81,59 @@ def getDesviasionRespectoALaMedia(input, tirada):
         DesvRespMedia.append(input-media)
     return DesvRespMedia
 
+
 def getFrecuenciaAbsoluta(tirada):
-    frecAbs = {}  
+    frecAbs = {}
     for t in tirada:
         if t not in frecAbs.keys():
             frecAbs[t] = 1
         else:
-            frecAbs[t] =   frecAbs[t] + 1        
+            frecAbs[t] = frecAbs[t] + 1
     return frecAbs
 
 
 ################ MAIN LOOP ################
+
 inputNumber = getInput()
 tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 
 # Grafica frecuencia relativa
-# plt.plot(getFrecuenciaRelativa(tirada, inputNumber))
-# plt.show()
+plt.suptitle('Frecuencia Relativa')
+plt.plot(getFrecuenciaRelativa(tirada, inputNumber))
+plt.plot([-100, Constant.TIRADAS],
+         [1/Constant.CANTMONTECARLO, 1/Constant.CANTMONTECARLO], 'r-o')
+plt.annotate('Valor esperado',
+             color='red',
+             xy=(Constant.TIRADAS/2, 0.03),
+             xytext=(Constant.TIRADAS/2, 0.03)
+             )
+plt.show()
 
 # Grafica valor promedio
-# plt.figure()
-# plt.plot([-100, Constant.TIRADAS], [18, 18], 'r-o')
-# plt.plot(getValorPromedio(tirada))
-# plt.annotate('Valor promedio esperado',color='red', xy=(Constant.TIRADAS/2, 17.95), xytext=(Constant.TIRADAS/2, 19),
-#              arrowprops=dict(facecolor='red', edgecolor='red', shrink=0.05),
-#              )
-# plt.show()
+plt.figure()
+plt.suptitle('Valor Promedio')
+plt.plot([-100, Constant.TIRADAS], [18, 18], 'r-o')
+plt.plot(getValorPromedio(tirada))
+plt.annotate('Valor promedio esperado',
+             color='red',
+             xy=(Constant.TIRADAS/2, 17.95),
+             xytext=(Constant.TIRADAS/2, 19),
+             arrowprops=dict(facecolor='red', edgecolor='red', shrink=0.05),
+             )
+plt.show()
 
 # Grafica varianza
-# plt.figure()
-# plt.plot(getVarianza(tirada))
-# plt.show()
+plt.suptitle('Varianza')
+plt.figure()
+plt.plot(getVarianza(tirada))
+plt.show()
 
 
 # Grafica desviacion
-# plt.figure()
-# plt.plot(getDesviacion(tirada))
-# plt.show()
+plt.suptitle('Desviacion Tipica')
+plt.figure()
+plt.plot(getDesviacion(tirada))
+plt.show()
 
 # Grafica desviasion respecto a la media
 # plt.figure()
@@ -136,7 +152,7 @@ tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 # GRafica frecuencia absoluta (en barras)
 
 threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
-fig,ax = plt.subplots()
+fig, ax = plt.subplots()
 ax.plot([0, 37], [threshold, threshold], "k--")
 
 langs = ["Tiradas"]
