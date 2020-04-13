@@ -5,24 +5,26 @@ import pandas as pd
 
 
 class Constant:
-    TIRADAS = 50000
+    TIRADAS = 500
     CANTMONTECARLO = 36
+    REPETICIONES = 5
+    INPUT = 6
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
 color = ['r', 'b', 'g', 'y', 'p']
 
-
-def getInput():
-    correct = False
-    while correct != True:
-        inputNumber = int(input("Dígame un número de la ruleta (entre 0 y 36):"))
-        if inputNumber >= 0 and inputNumber <= Constant.CANTMONTECARLO:
-            correct = True
-        else:
-            print('Numero Fuera de indice, Elija entre 0 y 36')
-    else:
-        return inputNumber
+# OBSOLETO
+# def getInput():
+#     correct = False
+#     while correct != True:
+#         inputNumber = int(input("Dígame un número de la ruleta (entre 0 y 36):"))
+#         if inputNumber >= 0 and inputNumber <= Constant.CANTMONTECARLO:
+#             correct = True
+#         else:
+#             print('Numero Fuera de indice, Elija entre 0 y 36')
+#     else:
+#         return inputNumber
 
 
 def getValorPromedio(tirada):
@@ -92,53 +94,88 @@ def getFrecuenciaAbsoluta(tirada):
     return frecAbs
 
 
-################ MAIN LOOP ################
+def graphFrecuenciaRelativa():
+    c = 0
+    plt.suptitle('Frecuencia Relativa')
+    while c <= Constant.REPETICIONES:
+        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        plt.plot(getFrecuenciaRelativa(tirada, Constant.INPUT))
+        c += 1
+    plt.plot([-100, Constant.TIRADAS],
+             [1/Constant.CANTMONTECARLO, 1/Constant.CANTMONTECARLO], 'k-o')
+    plt.annotate('Valor esperado',
+                 color='black',
+                 xy=(Constant.TIRADAS/2, 0.03),
+                 xytext=(Constant.TIRADAS/2, 0.03)
+                 )
+    plt.show()
 
-inputNumber = getInput()
-tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+
+def graphValorPromedio():
+    c = 0
+    plt.suptitle('Valor Promedio')
+    plt.plot([-100, Constant.TIRADAS], [18, 18], 'k-o')
+    while c <= Constant.REPETICIONES:
+        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        plt.plot(getValorPromedio(tirada))
+        c += 1
+    plt.annotate('Valor promedio esperado',
+                 color='black',
+                 xy=(Constant.TIRADAS/2, 17.95),
+                 xytext=(Constant.TIRADAS/2, 19),
+                 arrowprops=dict(facecolor='black',
+                                 edgecolor='black',
+                                 shrink=0.05),
+                 )
+    plt.show()
+
+
+def graphVarianza():
+    c = 0
+    plt.suptitle('Varianza')
+    while c <= Constant.REPETICIONES:
+        print(c)
+        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        plt.plot(getVarianza(tirada))
+        c += 1
+    plt.show()
+
+
+def graphDesviacion():
+    c = 0
+    plt.suptitle('Desviacion Tipica')
+    while c <= Constant.REPETICIONES:
+        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        plt.plot(getDesviacion(tirada))
+        c += 1
+    plt.show()
+
+
+def graphDesviacionRespectoMedia():
+    c = 0
+    plt.suptitle('Desviacion Respecto A La Media')
+    while c <= Constant.REPETICIONES:
+        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        plt.plot(getDesviasionRespectoALaMedia(inputNumber, tirada))
+        c += 1
+    plt.show()
+# MAIN LOOP ################
+
 
 # Grafica frecuencia relativa
-plt.suptitle('Frecuencia Relativa')
-plt.plot(getFrecuenciaRelativa(tirada, inputNumber))
-plt.plot([-100, Constant.TIRADAS],
-         [1/Constant.CANTMONTECARLO, 1/Constant.CANTMONTECARLO], 'r-o')
-plt.annotate('Valor esperado',
-             color='red',
-             xy=(Constant.TIRADAS/2, 0.03),
-             xytext=(Constant.TIRADAS/2, 0.03)
-             )
-plt.show()
-
+graphFrecuenciaRelativa()
 # Grafica valor promedio
 plt.figure()
-plt.suptitle('Valor Promedio')
-plt.plot([-100, Constant.TIRADAS], [18, 18], 'r-o')
-plt.plot(getValorPromedio(tirada))
-plt.annotate('Valor promedio esperado',
-             color='red',
-             xy=(Constant.TIRADAS/2, 17.95),
-             xytext=(Constant.TIRADAS/2, 19),
-             arrowprops=dict(facecolor='red', edgecolor='red', shrink=0.05),
-             )
-plt.show()
-
+graphValorPromedio()
 # Grafica varianza
-plt.suptitle('Varianza')
 plt.figure()
-plt.plot(getVarianza(tirada))
-plt.show()
-
-
+graphVarianza()
 # Grafica desviacion
-plt.suptitle('Desviacion Tipica')
 plt.figure()
-plt.plot(getDesviacion(tirada))
-plt.show()
-
+graphDesviacion()
 # Grafica desviasion respecto a la media
-# plt.figure()
-# plt.plot(getDesviasionRespectoALaMedia(inputNumber, tirada))
-# plt.show()
+plt.figure()
+graphDesviacionRespectoMedia()
 
 
 # Lista completa de tiradas
@@ -151,18 +188,18 @@ plt.show()
 
 # GRafica frecuencia absoluta (en barras)
 
-threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
-fig, ax = plt.subplots()
-ax.plot([0, 37], [threshold, threshold], "k--")
+# threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
+# fig, ax = plt.subplots()
+# ax.plot([0, 37], [threshold, threshold], "k--")
 
-langs = ["Tiradas"]
-data = getFrecuenciaAbsoluta(tirada)
-df = pd.DataFrame(data, index=langs).transpose()
-plt.bar(df.index, df["Tiradas"])
-plt.xticks(df.index)
+# langs = ["Tiradas"]
+# data = getFrecuenciaAbsoluta(tirada)
+# df = pd.DataFrame(data, index=langs).transpose()
+# plt.bar(df.index, df["Tiradas"])
+# plt.xticks(df.index)
 
-plt.suptitle('Frecuencia Absoluta')
-plt.ylabel('Cantidad de tiradas')
-plt.xlabel('Numeros de la ruleta')
+# plt.suptitle('Frecuencia Absoluta')
+# plt.ylabel('Cantidad de tiradas')
+# plt.xlabel('Numeros de la ruleta')
 
-plt.show()
+# plt.show()
