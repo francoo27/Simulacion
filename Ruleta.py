@@ -5,8 +5,8 @@ import pandas as pd
 
 
 class Constant:
-    TIRADAS = 100000
-    CANTMONTECARLO = 37
+    TIRADAS = 1000
+    EUROPEA = 37
     REPETICIONES = 5
     INPUT = 6
 
@@ -42,7 +42,7 @@ def getTirada(quantity, maxValue):
     tirada = []
     for i in range(1, quantity):
         # Obtener valor random dentro de el rango y añadirlo a la lista
-        tirada.append(random.randint(0, maxValue))
+        tirada.append(random.randint(0, maxValue - 1))
     return tirada
 
 
@@ -89,7 +89,7 @@ def graphFrecuenciaRelativa():
         plt.plot(getFrecuenciaRelativa(tiradas[c], Constant.INPUT))
         c += 1
     plt.plot([0, Constant.TIRADAS],
-             [1/Constant.CANTMONTECARLO, 1/Constant.CANTMONTECARLO], 'k-o')
+             [1/Constant.EUROPEA, 1/Constant.EUROPEA], 'k-o')
     plt.annotate('Valor esperado',
                  color='black',
                  xy=(Constant.TIRADAS/2, 0.03),
@@ -143,10 +143,25 @@ def graphDesviacionRespectoMedia():
     plt.show()
 
 
+def graphBarrasAbsolutas():
+    threshold = Constant.TIRADAS/Constant.EUROPEA
+    fig, ax = plt.subplots()
+    ax.plot([0, 36], [threshold, threshold], "k--")
+    langs = ["Tiradas"]
+    data = getFrecuenciaAbsoluta(tiradas[0])
+    df = pd.DataFrame(data, index=langs).transpose()
+    plt.bar(df.index, df["Tiradas"])
+    plt.xticks(df.index)
+    plt.suptitle('Frecuencia Absoluta')
+    plt.ylabel('Cantidad de Apariciones')
+    plt.xlabel('Numeros de la Ruleta')
+    plt.show()
+
+
 def fillTiradas(tiradas):
     c = 0
     while c < Constant.REPETICIONES:
-        tiradita = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        tiradita = getTirada(Constant.TIRADAS, Constant.EUROPEA)
         tiradas[c] = tiradita
         c += 1
 
@@ -156,6 +171,8 @@ tiradas = Constant.REPETICIONES*[Constant.TIRADAS*[0]]
 
 fillTiradas(tiradas)
 # print(tiradas)
+# Grafica frecuencia absoluta (en barras)
+graphBarrasAbsolutas()
 # Grafica frecuencia relativa
 graphFrecuenciaRelativa()
 # Grafica valor promedio
@@ -164,39 +181,9 @@ graphValorPromedio()
 # Grafica varianza
 plt.figure()
 graphVarianza()
-# # Grafica desviacion
+# Grafica desviacion
 plt.figure()
 graphDesviacion()
-# # Grafica desviasion respecto a la media
+# Grafica desviasion respecto a la media
 plt.figure()
-graphDesviacionRespectoMedia()
-
-
-# Lista completa de tiradas
-# for i in (lista):
-#    print (lista[i])
-
-# plt.suptitle('%i Tiradas' % n)
-# plt.ylabel('S (desvio)')
-# plt.xlabel('n (Numero de tiradas)')
-
-# GRafica frecuencia absoluta (en barras)
-# def getGraphBarrasAbsoluta():
-
-
-# tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-# threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
-# fig, ax = plt.subplots()
-# ax.plot([0, 37], [threshold, threshold], "k--")
-
-# langs = ["Tiradas"]
-# data = getFrecuenciaAbsoluta(tirada)
-# df = pd.DataFrame(data, index=langs).transpose()
-# plt.bar(df.index, df["Tiradas"])
-# plt.xticks(df.index)
-
-# plt.suptitle('Frecuencia Absoluta')
-# plt.ylabel('Cantidad de tiradas')
-# plt.xlabel('Numeros de la ruleta')
-
-# plt.show()
+# graphDesviacionRespectoMedia()
