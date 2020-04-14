@@ -138,7 +138,7 @@ def graphDesviacionRespectoMedia():
     c = 0
     plt.suptitle('Desviacion Respecto A La Media')
     while c < Constant.REPETICIONES:
-        plt.plot(getDesviasionRespectoALaMedia(inputNumber, tiradas[c]))
+        plt.plot(getDesviasionRespectoALaMedia(Constant.INPUT, tiradas[c]))
         c += 1
     plt.show()
 
@@ -174,6 +174,7 @@ fillTiradas(tiradas)
 # Grafica frecuencia absoluta (en barras)
 graphBarrasAbsolutas()
 # Grafica frecuencia relativa
+plt.figure()
 graphFrecuenciaRelativa()
 # Grafica valor promedio
 plt.figure()
@@ -186,4 +187,25 @@ plt.figure()
 graphDesviacion()
 # Grafica desviasion respecto a la media
 plt.figure()
-# graphDesviacionRespectoMedia()
+graphDesviacionRespectoMedia()
+
+Constant.REPETICIONES = 1
+# print(tiradas)
+# Grafica frecuencia absoluta (en barras)
+plt.figure()
+graphBarrasAbsolutas()
+# Grafica frecuencia relativa
+plt.figure()
+graphFrecuenciaRelativa()
+# Grafica valor promedio
+plt.figure()
+graphValorPromedio()
+# Grafica varianza
+plt.figure()
+graphVarianza()
+# Grafica desviacion
+plt.figure()
+graphDesviacion()
+# Grafica desviasion respecto a la media
+plt.figure()
+graphDesviacionRespectoMedia()
