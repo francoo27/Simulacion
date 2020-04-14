@@ -5,26 +5,14 @@ import pandas as pd
 
 
 class Constant:
-    TIRADAS = 500
-    CANTMONTECARLO = 36
+    TIRADAS = 100000
+    CANTMONTECARLO = 37
     REPETICIONES = 5
     INPUT = 6
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
 color = ['r', 'b', 'g', 'y', 'p']
-
-# OBSOLETO
-# def getInput():
-#     correct = False
-#     while correct != True:
-#         inputNumber = int(input("Dígame un número de la ruleta (entre 0 y 36):"))
-#         if inputNumber >= 0 and inputNumber <= Constant.CANTMONTECARLO:
-#             correct = True
-#         else:
-#             print('Numero Fuera de indice, Elija entre 0 y 36')
-#     else:
-#         return inputNumber
 
 
 def getValorPromedio(tirada):
@@ -97,11 +85,10 @@ def getFrecuenciaAbsoluta(tirada):
 def graphFrecuenciaRelativa():
     c = 0
     plt.suptitle('Frecuencia Relativa')
-    while c <= Constant.REPETICIONES:
-        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-        plt.plot(getFrecuenciaRelativa(tirada, Constant.INPUT))
+    while c < Constant.REPETICIONES:
+        plt.plot(getFrecuenciaRelativa(tiradas[c], Constant.INPUT))
         c += 1
-    plt.plot([-100, Constant.TIRADAS],
+    plt.plot([0, Constant.TIRADAS],
              [1/Constant.CANTMONTECARLO, 1/Constant.CANTMONTECARLO], 'k-o')
     plt.annotate('Valor esperado',
                  color='black',
@@ -114,10 +101,9 @@ def graphFrecuenciaRelativa():
 def graphValorPromedio():
     c = 0
     plt.suptitle('Valor Promedio')
-    plt.plot([-100, Constant.TIRADAS], [18, 18], 'k-o')
-    while c <= Constant.REPETICIONES:
-        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-        plt.plot(getValorPromedio(tirada))
+    plt.plot([0, Constant.TIRADAS], [18, 18], 'k-o')
+    while c < Constant.REPETICIONES:
+        plt.plot(getValorPromedio(tiradas[c]))
         c += 1
     plt.annotate('Valor promedio esperado',
                  color='black',
@@ -133,10 +119,8 @@ def graphValorPromedio():
 def graphVarianza():
     c = 0
     plt.suptitle('Varianza')
-    while c <= Constant.REPETICIONES:
-        print(c)
-        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-        plt.plot(getVarianza(tirada))
+    while c < Constant.REPETICIONES:
+        plt.plot(getVarianza(tiradas[c]))
         c += 1
     plt.show()
 
@@ -144,9 +128,8 @@ def graphVarianza():
 def graphDesviacion():
     c = 0
     plt.suptitle('Desviacion Tipica')
-    while c <= Constant.REPETICIONES:
-        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-        plt.plot(getDesviacion(tirada))
+    while c < Constant.REPETICIONES:
+        plt.plot(getDesviacion(tiradas[c]))
         c += 1
     plt.show()
 
@@ -154,14 +137,25 @@ def graphDesviacion():
 def graphDesviacionRespectoMedia():
     c = 0
     plt.suptitle('Desviacion Respecto A La Media')
-    while c <= Constant.REPETICIONES:
-        tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
-        plt.plot(getDesviasionRespectoALaMedia(inputNumber, tirada))
+    while c < Constant.REPETICIONES:
+        plt.plot(getDesviasionRespectoALaMedia(inputNumber, tiradas[c]))
         c += 1
     plt.show()
+
+
+def fillTiradas(tiradas):
+    c = 0
+    while c < Constant.REPETICIONES:
+        tiradita = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
+        tiradas[c] = tiradita
+        c += 1
+
+
 # MAIN LOOP ################
+tiradas = Constant.REPETICIONES*[Constant.TIRADAS*[0]]
 
-
+fillTiradas(tiradas)
+# print(tiradas)
 # Grafica frecuencia relativa
 graphFrecuenciaRelativa()
 # Grafica valor promedio
@@ -170,10 +164,10 @@ graphValorPromedio()
 # Grafica varianza
 plt.figure()
 graphVarianza()
-# Grafica desviacion
+# # Grafica desviacion
 plt.figure()
 graphDesviacion()
-# Grafica desviasion respecto a la media
+# # Grafica desviasion respecto a la media
 plt.figure()
 graphDesviacionRespectoMedia()
 
@@ -187,7 +181,10 @@ graphDesviacionRespectoMedia()
 # plt.xlabel('n (Numero de tiradas)')
 
 # GRafica frecuencia absoluta (en barras)
+# def getGraphBarrasAbsoluta():
 
+
+# tirada = getTirada(Constant.TIRADAS, Constant.CANTMONTECARLO)
 # threshold = Constant.TIRADAS/Constant.CANTMONTECARLO
 # fig, ax = plt.subplots()
 # ax.plot([0, 37], [threshold, threshold], "k--")
