@@ -85,6 +85,8 @@ def getFrecuenciaAbsoluta(tirada):
 def graphFrecuenciaRelativa():
     c = 0
     plt.suptitle('Frecuencia Relativa')
+    plt.ylabel('Frecuencia Relativa')
+    plt.xlabel('Cantidad de tiradas')
     while c < Constant.REPETICIONES:
         plt.plot(getFrecuenciaRelativa(tiradas[c], Constant.INPUT))
         c += 1
@@ -101,6 +103,8 @@ def graphFrecuenciaRelativa():
 def graphValorPromedio():
     c = 0
     plt.suptitle('Valor Promedio')
+    plt.ylabel('Valor Promedio')
+    plt.xlabel('Cantidad de tiradas')
     plt.plot([0, Constant.TIRADAS], [18, 18], 'k-o')
     while c < Constant.REPETICIONES:
         plt.plot(getValorPromedio(tiradas[c]))
@@ -119,6 +123,8 @@ def graphValorPromedio():
 def graphVarianza():
     c = 0
     plt.suptitle('Varianza')
+    plt.ylabel('Varianza')
+    plt.xlabel('Cantidad de tiradas')
     while c < Constant.REPETICIONES:
         plt.plot(getVarianza(tiradas[c]))
         c += 1
@@ -128,6 +134,8 @@ def graphVarianza():
 def graphDesviacion():
     c = 0
     plt.suptitle('Desviacion Tipica')
+    plt.ylabel('Desviacion Tipica')
+    plt.xlabel('Cantidad de tiradas')
     while c < Constant.REPETICIONES:
         plt.plot(getDesviacion(tiradas[c]))
         c += 1
@@ -137,6 +145,8 @@ def graphDesviacion():
 def graphDesviacionRespectoMedia():
     c = 0
     plt.suptitle('Desviacion Respecto A La Media')
+    plt.ylabel('Desviacion Respecto A La Media')
+    plt.xlabel('Cantidad de tiradas')
     while c < Constant.REPETICIONES:
         plt.plot(getDesviasionRespectoALaMedia(Constant.INPUT, tiradas[c]))
         c += 1
