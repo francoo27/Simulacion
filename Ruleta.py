@@ -5,7 +5,7 @@ import pandas as pd
 
 
 class Constant:
-    TIRADAS = 1000
+    TIRADAS = 10000
     EUROPEA = 37
     REPETICIONES = 5
     INPUT = 6
@@ -92,11 +92,6 @@ def graphFrecuenciaRelativa():
         c += 1
     plt.plot([0, Constant.TIRADAS],
              [1/Constant.EUROPEA, 1/Constant.EUROPEA], 'k-o')
-    plt.annotate('Valor esperado',
-                 color='black',
-                 xy=(Constant.TIRADAS/2, 0.03),
-                 xytext=(Constant.TIRADAS/2, 0.03)
-                 )
     plt.show()
 
 
@@ -109,14 +104,6 @@ def graphValorPromedio():
     while c < Constant.REPETICIONES:
         plt.plot(getValorPromedio(tiradas[c]))
         c += 1
-    plt.annotate('Valor promedio esperado',
-                 color='black',
-                 xy=(Constant.TIRADAS/2, 17.95),
-                 xytext=(Constant.TIRADAS/2, 19),
-                 arrowprops=dict(facecolor='black',
-                                 edgecolor='black',
-                                 shrink=0.05),
-                 )
     plt.show()
 
 
@@ -129,14 +116,6 @@ def graphVarianza():
     while c < Constant.REPETICIONES:
         plt.plot(getVarianza(tiradas[c]))
         c += 1
-    plt.annotate('Valor promedio esperado',
-                 color='black',
-                 xy=(Constant.TIRADAS/2, 114),
-                 xytext=(Constant.TIRADAS/2, 114),
-                 arrowprops=dict(facecolor='black',
-                                 edgecolor='black',
-                                 shrink=0.05),
-                 )
     plt.show()
 
 
@@ -149,14 +128,6 @@ def graphDesviacion():
     while c < Constant.REPETICIONES:
         plt.plot(getDesviacion(tiradas[c]))
         c += 1
-    plt.annotate('Valor promedio esperado',
-                 color='black',
-                 xy=(Constant.TIRADAS/2, np.sqrt(114)),
-                 xytext=(Constant.TIRADAS/2, np.sqrt(114)),
-                 arrowprops=dict(facecolor='black',
-                                 edgecolor='black',
-                                 shrink=0.05),
-                 )
     plt.show()
 
 
@@ -170,14 +141,6 @@ def graphDesviacionRespectoMedia():
     while c < Constant.REPETICIONES:
         plt.plot(getDesviasionRespectoALaMedia(Constant.INPUT, tiradas[c]))
         c += 1
-    plt.annotate('Valor promedio esperado',
-                 color='black',
-                 xy=(Constant.TIRADAS/2, Constant.INPUT - 18),
-                 xytext=(Constant.TIRADAS/2, Constant.INPUT - 16),
-                 arrowprops=dict(facecolor='black',
-                                 edgecolor='black',
-                                 shrink=0.05),
-                 )
     plt.show()
 
 
