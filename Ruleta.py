@@ -171,7 +171,6 @@ def fillTiradas(tiradas):
 tiradas = Constant.REPETICIONES*[Constant.TIRADAS*[0]]
 
 fillTiradas(tiradas)
-# print(tiradas)
 # Grafica frecuencia absoluta (en barras)
 graphBarrasAbsolutas()
 # Grafica frecuencia relativa
@@ -189,9 +188,7 @@ graphDesviacion()
 # Grafica desviasion respecto a la media
 plt.figure()
 graphDesviacionRespectoMedia()
-
 Constant.REPETICIONES = 1
-# print(tiradas)
 # Grafica frecuencia absoluta (en barras)
 plt.figure()
 graphBarrasAbsolutas()
