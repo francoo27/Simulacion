@@ -125,9 +125,18 @@ def graphVarianza():
     plt.suptitle('Varianza')
     plt.ylabel('Varianza')
     plt.xlabel('Cantidad de tiradas')
+    plt.plot([0, Constant.TIRADAS], [114, 114], 'k-o')
     while c < Constant.REPETICIONES:
         plt.plot(getVarianza(tiradas[c]))
         c += 1
+    plt.annotate('Valor promedio esperado',
+                 color='black',
+                 xy=(Constant.TIRADAS/2, 114),
+                 xytext=(Constant.TIRADAS/2, 114),
+                 arrowprops=dict(facecolor='black',
+                                 edgecolor='black',
+                                 shrink=0.05),
+                 )
     plt.show()
 
 
@@ -136,9 +145,18 @@ def graphDesviacion():
     plt.suptitle('Desviacion Tipica')
     plt.ylabel('Desviacion Tipica')
     plt.xlabel('Cantidad de tiradas')
+    plt.plot([0, Constant.TIRADAS], [np.sqrt(114), np.sqrt(114)], 'k-o')
     while c < Constant.REPETICIONES:
         plt.plot(getDesviacion(tiradas[c]))
         c += 1
+    plt.annotate('Valor promedio esperado',
+                 color='black',
+                 xy=(Constant.TIRADAS/2, np.sqrt(114)),
+                 xytext=(Constant.TIRADAS/2, np.sqrt(114)),
+                 arrowprops=dict(facecolor='black',
+                                 edgecolor='black',
+                                 shrink=0.05),
+                 )
     plt.show()
 
 
@@ -147,9 +165,19 @@ def graphDesviacionRespectoMedia():
     plt.suptitle('Desviacion Respecto A La Media')
     plt.ylabel('Desviacion Respecto A La Media')
     plt.xlabel('Cantidad de tiradas')
+    plt.plot([0, Constant.TIRADAS], [Constant.INPUT - 18, Constant.INPUT - 18],
+             'k-o')
     while c < Constant.REPETICIONES:
         plt.plot(getDesviasionRespectoALaMedia(Constant.INPUT, tiradas[c]))
         c += 1
+    plt.annotate('Valor promedio esperado',
+                 color='black',
+                 xy=(Constant.TIRADAS/2, Constant.INPUT - 18),
+                 xytext=(Constant.TIRADAS/2, Constant.INPUT - 16),
+                 arrowprops=dict(facecolor='black',
+                                 edgecolor='black',
+                                 shrink=0.05),
+                 )
     plt.show()
 
 
