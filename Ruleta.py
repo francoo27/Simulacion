@@ -4,11 +4,40 @@ import random
 import pandas as pd
 
 
-class Constant:
-    TIRADAS = 10000
+class CONSTANT:
+    TIRADAS = 120
     EUROPEA = 37
-    REPETICIONES = 5
+    REPETICIONES = 9
     INPUT = 6
+
+
+class NIVELECONOMICO:
+    MUY_ALTO = (150000, 500000)
+    ALTO = (75000, 150000)
+    MEDIO = (5000, 75000)
+    BAJO = (100, 5000)
+
+
+class APUESTAS:
+    PAR = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36]
+    IMPAR = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]
+    NEGRO = [2, 6, 4, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+    ROJO = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+    PRIMER_DOCE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    SEGUNDO_DOCE = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+    TERCER_DOCE = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+    PRIMER_COLUMNA = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+    SEGUNDA_COLUMNA = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
+    TERCERA_COLUMNA = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
+    UNO_A_DIECIOCHO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18]
+    DIECIOCHO_A_TREINTISEIS = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,36]
+
+
+class Jugador:
+    id
+    numElegidos
+    estiloJuego
+    nivelEconomico
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
@@ -87,11 +116,11 @@ def graphFrecuenciaRelativa():
     plt.suptitle('Frecuencia Relativa')
     plt.ylabel('Frecuencia Relativa')
     plt.xlabel('Cantidad de tiradas')
-    while c < Constant.REPETICIONES:
-        plt.plot(getFrecuenciaRelativa(tiradas[c], Constant.INPUT))
+    while c < CONSTANT.REPETICIONES:
+        plt.plot(getFrecuenciaRelativa(tiradas[c], CONSTANT.INPUT))
         c += 1
-    plt.plot([0, Constant.TIRADAS],
-             [1/Constant.EUROPEA, 1/Constant.EUROPEA], 'k-o')
+    plt.plot([0, CONSTANT.TIRADAS],
+             [1/CONSTANT.EUROPEA, 1/CONSTANT.EUROPEA], 'k-o')
     plt.show()
 
 
@@ -100,8 +129,8 @@ def graphValorPromedio():
     plt.suptitle('Valor Promedio')
     plt.ylabel('Valor Promedio')
     plt.xlabel('Cantidad de tiradas')
-    plt.plot([0, Constant.TIRADAS], [18, 18], 'k-o')
-    while c < Constant.REPETICIONES:
+    plt.plot([0, CONSTANT.TIRADAS], [18, 18], 'k-o')
+    while c < CONSTANT.REPETICIONES:
         plt.plot(getValorPromedio(tiradas[c]))
         c += 1
     plt.show()
@@ -112,8 +141,8 @@ def graphVarianza():
     plt.suptitle('Varianza')
     plt.ylabel('Varianza')
     plt.xlabel('Cantidad de tiradas')
-    plt.plot([0, Constant.TIRADAS], [114, 114], 'k-o')
-    while c < Constant.REPETICIONES:
+    plt.plot([0, CONSTANT.TIRADAS], [114, 114], 'k-o')
+    while c < CONSTANT.REPETICIONES:
         plt.plot(getVarianza(tiradas[c]))
         c += 1
     plt.show()
@@ -124,8 +153,8 @@ def graphDesviacion():
     plt.suptitle('Desviacion Tipica')
     plt.ylabel('Desviacion Tipica')
     plt.xlabel('Cantidad de tiradas')
-    plt.plot([0, Constant.TIRADAS], [np.sqrt(114), np.sqrt(114)], 'k-o')
-    while c < Constant.REPETICIONES:
+    plt.plot([0, CONSTANT.TIRADAS], [np.sqrt(114), np.sqrt(114)], 'k-o')
+    while c < CONSTANT.REPETICIONES:
         plt.plot(getDesviacion(tiradas[c]))
         c += 1
     plt.show()
@@ -136,16 +165,16 @@ def graphDesviacionRespectoMedia():
     plt.suptitle('Desviacion Respecto A La Media')
     plt.ylabel('Desviacion Respecto A La Media')
     plt.xlabel('Cantidad de tiradas')
-    plt.plot([0, Constant.TIRADAS], [Constant.INPUT - 18, Constant.INPUT - 18],
+    plt.plot([0, CONSTANT.TIRADAS], [CONSTANT.INPUT - 18, CONSTANT.INPUT - 18],
              'k-o')
-    while c < Constant.REPETICIONES:
-        plt.plot(getDesviasionRespectoALaMedia(Constant.INPUT, tiradas[c]))
+    while c < CONSTANT.REPETICIONES:
+        plt.plot(getDesviasionRespectoALaMedia(CONSTANT.INPUT, tiradas[c]))
         c += 1
     plt.show()
 
 
 def graphBarrasAbsolutas():
-    threshold = Constant.TIRADAS/Constant.EUROPEA
+    threshold = CONSTANT.TIRADAS/CONSTANT.EUROPEA
     fig, ax = plt.subplots()
     ax.plot([0, 36], [threshold, threshold], "k--")
     langs = ["Tiradas"]
@@ -159,51 +188,87 @@ def graphBarrasAbsolutas():
     plt.show()
 
 
-def fillTiradas(tiradas):
+def fillTiradas(tiradas, repeticiones):
     c = 0
-    while c < Constant.REPETICIONES:
-        tiradita = getTirada(Constant.TIRADAS, Constant.EUROPEA)
+    while c < repeticiones:
+        tiradita = getTirada(CONSTANT.TIRADAS, CONSTANT.EUROPEA)
         tiradas[c] = tiradita
         c += 1
 
 
-# MAIN LOOP ################
-tiradas = Constant.REPETICIONES*[Constant.TIRADAS*[0]]
+def getTableSim(players,spins):
+    tableSim = players*[spins*[0]]
 
-fillTiradas(tiradas)
-# Grafica frecuencia absoluta (en barras)
-graphBarrasAbsolutas()
-# Grafica frecuencia relativa
-plt.figure()
-graphFrecuenciaRelativa()
-# Grafica valor promedio
-plt.figure()
-graphValorPromedio()
-# Grafica varianza
-plt.figure()
-graphVarianza()
-# Grafica desviacion
-plt.figure()
-graphDesviacion()
-# Grafica desviasion respecto a la media
-plt.figure()
-graphDesviacionRespectoMedia()
-Constant.REPETICIONES = 1
-# Grafica frecuencia absoluta (en barras)
-plt.figure()
-graphBarrasAbsolutas()
-# Grafica frecuencia relativa
-plt.figure()
-graphFrecuenciaRelativa()
-# Grafica valor promedio
-plt.figure()
-graphValorPromedio()
-# Grafica varianza
-plt.figure()
-graphVarianza()
-# Grafica desviacion
-plt.figure()
-graphDesviacion()
-# Grafica desviasion respecto a la media
-plt.figure()
-graphDesviacionRespectoMedia()
+
+# MAIN LOOP ################
+tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
+
+fillTiradas(tiradas, CONSTANT.REPETICIONES)
+c = 0
+while c < CONSTANT.REPETICIONES:
+    print(tiradas[c])
+    c += 1
+NIVELECONOMICO.ALTO.
+
+# 8 jugadores
+# cada jugador tiene su propia tirada (aleatoria sin patrones de comportamiento por ahora)
+# apuesta minima
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # Grafica frecuencia absoluta (en barras)
+# graphBarrasAbsolutas()
+# # Grafica frecuencia relativa
+# plt.figure()
+# graphFrecuenciaRelativa()
+# # Grafica valor promedio
+# plt.figure()
+# graphValorPromedio()
+# # Grafica varianza
+# plt.figure()
+# graphVarianza()
+# # Grafica desviacion
+# plt.figure()
+# graphDesviacion()
+# # Grafica desviasion respecto a la media
+# plt.figure()
+# graphDesviacionRespectoMedia()
+# CONSTANT.REPETICIONES = 1
+# # Grafica frecuencia absoluta (en barras)
+# plt.figure()
+# graphBarrasAbsolutas()
+# # Grafica frecuencia relativa
+# plt.figure()
+# graphFrecuenciaRelativa()
+# # Grafica valor promedio
+# plt.figure()
+# graphValorPromedio()
+# # Grafica varianza
+# plt.figure()
+# graphVarianza()
+# # Grafica desviacion
+# plt.figure()
+# graphDesviacion()
+# # Grafica desviasion respecto a la media
+# plt.figure()
+# graphDesviacionRespectoMedia()
