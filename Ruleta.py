@@ -5,9 +5,9 @@ import pandas as pd
 
 
 class CONSTANT:
-    TIRADAS = 50000
+    TIRADAS = 5000
     EUROPEA = 37
-    REPETICIONES = 1
+    REPETICIONES = 4
     INPUT = 6
 
 
@@ -33,38 +33,8 @@ class APUESTAS:
     DIECIOCHO_A_TREINTISEIS = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
 
-# class Jugador:
-#     id
-#     numElegidos
-#     estiloJuego
-#     nivelEconomico
-
-
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
 color = ['r', 'b', 'g', 'y', 'p']
-
-
-# def getValorPromedio(tirada):
-#     c = 0
-#     promedio = 0
-#     valorPromedio = []
-#     for i in tirada:
-#         c += 1
-#         promedio = promedio + i
-#         valorPromedio.append(promedio/c)
-#     return valorPromedio
-
-
-# def getFrecuenciaRelativa(tirada, input):
-#     frecRelativaNum = []
-#     absoluteFrecuency = 0
-#     c = 0
-#     for i in tirada:
-#         c = c + 1
-#         if i == input:
-#             absoluteFrecuency = absoluteFrecuency + 1
-#         frecRelativaNum.append(absoluteFrecuency/c)
-#     return frecRelativaNum
 
 
 def getTirada(quantity, maxValue):
@@ -73,119 +43,6 @@ def getTirada(quantity, maxValue):
         # Obtener valor random dentro de el rango y añadirlo a la lista
         tirada.append(random.randint(0, maxValue - 1))
     return tirada
-
-
-# def getVarianza(tirada):
-#     varianzaArr = []
-#     c = 1
-#     tiradaLenght = len(tirada)
-#     while c < tiradaLenght:
-#         varianzaArr.append(np.var(tirada[0:c]))
-#         c += 1
-#     return varianzaArr
-
-
-# def getDesviacion(tirada):
-#     return np.sqrt(getVarianza(tirada))
-
-
-# def getDesviasionRespectoALaMedia(input, tirada):
-#     c = 0
-#     promedio = 0
-#     DesvRespMedia = []
-#     for i in tirada:
-#         c += 1
-#         promedio = promedio + i
-#         media = promedio/c
-#         DesvRespMedia.append(input-media)
-#     return DesvRespMedia
-
-
-# def getFrecuenciaAbsoluta(tirada):
-#     frecAbs = {}
-#     for t in tirada:
-#         if t not in frecAbs.keys():
-#             frecAbs[t] = 1
-#         else:
-#             frecAbs[t] = frecAbs[t] + 1
-#     return frecAbs
-
-
-# def graphFrecuenciaRelativa():
-#     c = 0
-#     plt.suptitle('Frecuencia Relativa')
-#     plt.ylabel('Frecuencia Relativa')
-#     plt.xlabel('Cantidad de tiradas')
-#     while c < CONSTANT.REPETICIONES:
-#         plt.plot(getFrecuenciaRelativa(tiradas[c], CONSTANT.INPUT))
-#         c += 1
-#     plt.plot([0, CONSTANT.TIRADAS],
-#              [1/CONSTANT.EUROPEA, 1/CONSTANT.EUROPEA], 'k-o')
-#     plt.show()
-
-
-# def graphValorPromedio():
-#     c = 0
-#     plt.suptitle('Valor Promedio')
-#     plt.ylabel('Valor Promedio')
-#     plt.xlabel('Cantidad de tiradas')
-#     plt.plot([0, CONSTANT.TIRADAS], [18, 18], 'k-o')
-#     while c < CONSTANT.REPETICIONES:
-#         plt.plot(getValorPromedio(tiradas[c]))
-#         c += 1
-#     plt.show()
-
-
-# def graphVarianza():
-#     c = 0
-#     plt.suptitle('Varianza')
-#     plt.ylabel('Varianza')
-#     plt.xlabel('Cantidad de tiradas')
-#     plt.plot([0, CONSTANT.TIRADAS], [114, 114], 'k-o')
-#     while c < CONSTANT.REPETICIONES:
-#         plt.plot(getVarianza(tiradas[c]))
-#         c += 1
-#     plt.show()
-
-
-# def graphDesviacion():
-#     c = 0
-#     plt.suptitle('Desviacion Tipica')
-#     plt.ylabel('Desviacion Tipica')
-#     plt.xlabel('Cantidad de tiradas')
-#     plt.plot([0, CONSTANT.TIRADAS], [np.sqrt(114), np.sqrt(114)], 'k-o')
-#     while c < CONSTANT.REPETICIONES:
-#         plt.plot(getDesviacion(tiradas[c]))
-#         c += 1
-#     plt.show()
-
-
-# def graphDesviacionRespectoMedia():
-#     c = 0
-#     plt.suptitle('Desviacion Respecto A La Media')
-#     plt.ylabel('Desviacion Respecto A La Media')
-#     plt.xlabel('Cantidad de tiradas')
-#     plt.plot([0, CONSTANT.TIRADAS], [CONSTANT.INPUT - 18, CONSTANT.INPUT - 18],
-#              'k-o')
-#     while c < CONSTANT.REPETICIONES:
-#         plt.plot(getDesviasionRespectoALaMedia(CONSTANT.INPUT, tiradas[c]))
-#         c += 1
-#     plt.show()
-
-
-# def graphBarrasAbsolutas():
-#     threshold = CONSTANT.TIRADAS/CONSTANT.EUROPEA
-#     fig, ax = plt.subplots()
-#     ax.plot([0, 36], [threshold, threshold], "k--")
-#     langs = ["Tiradas"]
-#     data = getFrecuenciaAbsoluta(tiradas[0])
-#     df = pd.DataFrame(data, index=langs).transpose()
-#     plt.bar(df.index, df["Tiradas"])
-#     plt.xticks(df.index)
-#     plt.suptitle('Frecuencia Absoluta')
-#     plt.ylabel('Cantidad de Apariciones')
-#     plt.xlabel('Numeros de la Ruleta')
-#     plt.show()
 
 
 def fillTiradas(tiradas, repeticiones):
@@ -200,18 +57,18 @@ def fillTiradas(tiradas, repeticiones):
 #     tableSim = players*[spins*[0]]
 
 
-def martingala(tirada):
+def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
     capital = [100]
     apuesta = 1
     for i in tirada:
         print('Tengo:', capital[-1])
         print('Apueto: ', apuesta)
 
-        if (capital[-1] - apuesta) <= 0:
+        if (capital[-1] - apuesta) < 0:
             print('No me alcanza')
             break
 
-        if i in APUESTAS.NEGRO:
+        if i in tipoApuesta:
             capital.append(capital[-1] + apuesta)
             apuesta = 1
             print('Gano')
@@ -220,82 +77,47 @@ def martingala(tirada):
             apuesta = apuesta * 2
             print('Pierdo')
 
-    plt.suptitle('Apuestas')
-    plt.ylabel('Capital')
-    plt.xlabel('Tiradas')
-    plt.plot(capital)
-    plt.show()
-
+    # plt.suptitle('Apuestas')
+    # plt.ylabel('Capital')
+    # plt.xlabel('Tiradas')
+    # plt.plot(capital)
+    # plt.show()
+    # respuesta = [[CONSTANT.TIRADAS*[0]],0]
+    # respuesta[0] = capital
+    # respuesta[1] = color
+    return capital
 
 
 # MAIN LOOP ################
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
-martingala(tiradas[0])
+# jugadas = 5*[[2*[0], '']]
+# jugadas[0][1][1] = 
+# jugadas[][]
+# print(jugadas)
 
 
+# jugadas[0][0] = martingala(tiradas[0], APUESTAS.NEGRO)
+# jugadas[0][1] = 'k-o'
+# jugadas[1][0] = martingala(tiradas[0], APUESTAS.ROJO)
+# jugadas[1][1] = 'r-o'
+# jugadas[2][0] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE)
+# jugadas[2][1] = 'p-o'
+# jugadas[3][0] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE)
+# jugadas[3][1] = 'g-o'
+# jugadas[4][0] = martingala(tiradas[0], APUESTAS.TERCER_DOCE)
+# jugadas[4][1] = 'y-o'
+# i = 0
+# while i < CONSTANT.REPETICIONES:
+#     plt.plot(jugadas[i][0],jugadas[i][1])
+#     i += 1
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.show()
 
 
 # 8 jugadores
 # cada jugador tiene su propia tirada (aleatoria sin patrones de comportamiento por ahora)
 # apuesta minima
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Grafica frecuencia absoluta (en barras)
-# graphBarrasAbsolutas()
-# # Grafica frecuencia relativa
-# plt.figure()
-# graphFrecuenciaRelativa()
-# # Grafica valor promedio
-# plt.figure()
-# graphValorPromedio()
-# # Grafica varianza
-# plt.figure()
-# graphVarianza()
-# # Grafica desviacion
-# plt.figure()
-# graphDesviacion()
-# # Grafica desviasion respecto a la media
-# plt.figure()
-# graphDesviacionRespectoMedia()
-# CONSTANT.REPETICIONES = 1
-# # Grafica frecuencia absoluta (en barras)
-# plt.figure()
-# graphBarrasAbsolutas()
-# # Grafica frecuencia relativa
-# plt.figure()
-# graphFrecuenciaRelativa()
-# # Grafica valor promedio
-# plt.figure()
-# graphValorPromedio()
-# # Grafica varianza
-# plt.figure()
-# graphVarianza()
-# # Grafica desviacion
-# plt.figure()
-# graphDesviacion()
-# # Grafica desviasion respecto a la media
-# plt.figure()
-# graphDesviacionRespectoMedia()
