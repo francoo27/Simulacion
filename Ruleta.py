@@ -7,7 +7,7 @@ import pandas as pd
 class CONSTANT:
     TIRADAS = 5000
     EUROPEA = 37
-    REPETICIONES = 4
+    REPETICIONES = 5
     INPUT = 6
 
 
@@ -34,7 +34,7 @@ class APUESTAS:
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
-color = ['r', 'b', 'g', 'y', 'p']
+color = ['r-o', 'k-o', 'g-o', 'y-o', 'b-o']
 
 
 def getTirada(quantity, maxValue):
@@ -61,21 +61,21 @@ def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
     capital = [100]
     apuesta = 1
     for i in tirada:
-        print('Tengo:', capital[-1])
-        print('Apueto: ', apuesta)
+        # print('Tengo:', capital[-1])
+        # print('Apueto: ', apuesta)
 
         if (capital[-1] - apuesta) < 0:
-            print('No me alcanza')
+            # print('No me alcanza')
             break
 
         if i in tipoApuesta:
             capital.append(capital[-1] + apuesta)
             apuesta = 1
-            print('Gano')
+            # print('Gano')
         else:
             capital.append(capital[-1] - apuesta)
             apuesta = apuesta * 2
-            print('Pierdo')
+            # print('Pierdo')
 
     # plt.suptitle('Apuestas')
     # plt.ylabel('Capital')
@@ -92,30 +92,29 @@ def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
-# jugadas = 5*[[2*[0], '']]
-# jugadas[0][1][1] = 
-# jugadas[][]
-# print(jugadas)
+jugadas = 5*[[[0]]]
+jugadas = [ [0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 
 
-# jugadas[0][0] = martingala(tiradas[0], APUESTAS.NEGRO)
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO)
 # jugadas[0][1] = 'k-o'
-# jugadas[1][0] = martingala(tiradas[0], APUESTAS.ROJO)
+jugadas[1]  = martingala(tiradas[0], APUESTAS.ROJO)
 # jugadas[1][1] = 'r-o'
-# jugadas[2][0] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE)
-# jugadas[2][1] = 'p-o'
-# jugadas[3][0] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE)
-# jugadas[3][1] = 'g-o'
-# jugadas[4][0] = martingala(tiradas[0], APUESTAS.TERCER_DOCE)
-# jugadas[4][1] = 'y-o'
-# i = 0
-# while i < CONSTANT.REPETICIONES:
-#     plt.plot(jugadas[i][0],jugadas[i][1])
-#     i += 1
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.show()
+jugadas[2]  = martingala(tiradas[0], APUESTAS.PRIMER_DOCE)
+jugadas[3]  = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE)
+jugadas[4]  = martingala(tiradas[0], APUESTAS.TERCER_DOCE)
+i = 0
+while i < CONSTANT.REPETICIONES:
+    print(i)
+    plt.plot(jugadas[i],color[i])
+    i += 1
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
 
 
 # 8 jugadores
