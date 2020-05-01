@@ -177,41 +177,55 @@ def estraFib(tirada, tipoApuesta):
     return capital
 
 
+def getFrecuenciaRelativa(tirada):
+    cont = [0, 0, 0]
+    c = 0
+    while c < len(tirada):
+        if(tirada[c] == 0):
+            cont[0] += 1
+        if(tirada[c] in APUESTAS.NEGRO):
+            cont[1] += 1
+        if(tirada[c] in APUESTAS.ROJO):
+            cont[2] += 1
+        c += 1
+    return cont
+
 # MAIN LOOP ################
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
-# jugadas = 5*[[[0]]]
-jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
-i = 0
-contadordeceros = 0
-while i < len(tiradas[0]):
-    if (tiradas[0][i] == 0):
-        contadordeceros += 1
-        plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
-    i += 1
-print(contadordeceros)
-jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, 100,50)
-jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, 100,50)
-# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, 100,50)
-# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, 100,50)
-# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, 100,50)
-# print(jugadas)
-i = 0
-while i < CONSTANT.REPETICIONES:
-    plt.plot(jugadas[i], color[i])
-    i += 1
-plt.plot(getFlujoDeCaja(jugadas),'g-')
-# plt.plot(estraFib(tiradas[0]))
-plt.suptitle('Apuestas')
-plt.ylabel('Capital')
-plt.xlabel('Tiradas')
-plt.axhline(y=0, color='k')
-plt.axvline(x=0, color='k')
-plt.grid(True, which='both')
-plt.show()
+# # jugadas = 5*[[[0]]]
+# jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
+# i = 0
+# contadordeceros = 0
+# while i < len(tiradas[0]):
+#     if (tiradas[0][i] == 0):
+#         contadordeceros += 1
+#         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
+#     i += 1
+# print(contadordeceros)
+# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, 100,50)
+# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, 100,50)
+# # jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, 100,50)
+# # jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, 100,50)
+# # jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, 100,50)
+# # print(jugadas)
+# i = 0
+# while i < CONSTANT.REPETICIONES:
+#     plt.plot(jugadas[i], color[i])
+#     i += 1
+# plt.plot(getFlujoDeCaja(jugadas),'g-')
+# # plt.plot(estraFib(tiradas[0]))
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.axhline(y=0, color='k')
+# plt.axvline(x=0, color='k')
+# plt.grid(True, which='both')
+# plt.show()
 
-
-
+print(getFrecuenciaRelativa(tiradas[0])[0])
+print(getFrecuenciaRelativa(tiradas[0])[1])
+print(getFrecuenciaRelativa(tiradas[0])[2])
 # plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
 # plt.suptitle('Apuestas')
 # plt.ylabel('Capital')
