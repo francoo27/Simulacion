@@ -99,39 +99,8 @@ def getFlujoDeCaja(jugadas):
     # print(caja)
 
 
-# MAIN LOOP ################
-# tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
-
-# fillTiradas(tiradas, CONSTANT.REPETICIONES)
-# jugadas = 5*[[[0]]]
-# jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
-
-
-# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, maxPer=200)
-# # jugadas[0][1] = 'k-o'
-# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO)
-# # jugadas[1][1] = 'r-o'
-# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE)
-# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE)
-# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE)
-# i = 0
-# while i < CONSTANT.REPETICIONES:
-#     print(i)
-#     plt.plot(jugadas[i], color[i])
-#     i += 1
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
-
-# 8 jugadores
-# cada jugador tiene su propia tirada (aleatoria sin patrones de comportamiento por ahora)
-# apuesta minima
-
 FibArray = [0, 1]
+
 
 def fibonacci(n):
     if n < 0:
@@ -142,6 +111,7 @@ def fibonacci(n):
         temp_fib = fibonacci(n-1)+fibonacci(n-2)
         FibArray.append(temp_fib)
         return temp_fib
+
 
 fibonacci(100)
 FibArray.pop(0)
@@ -173,16 +143,17 @@ def estraFib(tirada):
             # print('Pierdo')
     return capital
 
+
 # MAIN LOOP ################
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
 jugadas = 5*[[[0]]]
 jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 i = 0
-contadordeceros=0
+contadordeceros = 0
 while i < len(tiradas[0]):
     if (tiradas[0][i] == 0):
-        contadordeceros+=1
+        contadordeceros += 1
         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
     i += 1
 print(contadordeceros)
@@ -205,5 +176,3 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
-
-
