@@ -7,7 +7,7 @@ import pandas as pd
 class CONSTANT:
     TIRADAS = 500
     EUROPEA = 37
-    REPETICIONES = 2
+    REPETICIONES = 5
     INPUT = 6
 
 
@@ -208,17 +208,46 @@ jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 #         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
 #     i += 1
 # print(contadordeceros)
-#######################################################
+# #######################################################
 # Variables comienzo
 capitalInicial = 100
 apuestaInicial = 5
 apuestaMax = 50
+# #######################################################
+# # Martingala apuesta a color con capital acotado
+# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO,
+#                         apuestaInicial, capitalInicial,
+#                         apuestaMax, True)
+# plt.plot(jugadas[0], color[0])
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.axhline(y=0, color='k')
+# plt.axvline(x=0, color='k')
+# plt.grid(True, which='both')
+# plt.show()
+# plt.subplot()
+# #######################################################
+# # Martingala apuesta a color con capital infinito
+# jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO,
+#                         apuestaInicial, capitalInicial,
+#                         apuestaMax, False)
+# plt.plot(jugadas[1], color[1])
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.axhline(y=0, color='k')
+# plt.axvline(x=0, color='k')
+# plt.grid(True, which='both')
+# plt.show()
 #######################################################
-# Martingala apuesta a color con capital acotado
-jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO,
+# Martingala apuesta a color con capital acotado en 5 tiradas distintas
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(martingala(tiradas[i], APUESTAS.NEGRO,
                         apuestaInicial, capitalInicial,
-                        apuestaMax, True)
-plt.plot(jugadas[0], color[0])
+                        apuestaMax, True))
+    i += 1
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
 plt.xlabel('Tiradas')
@@ -226,24 +255,39 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
-plt.subplot()
 #######################################################
-# Martingala apuesta a color con capital infinito
-jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO,
-                        apuestaInicial, capitalInicial,
-                        apuestaMax, False)
-plt.plot(jugadas[1], color[1])
-plt.suptitle('Apuestas')
-plt.ylabel('Capital')
-plt.xlabel('Tiradas')
-plt.axhline(y=0, color='k')
-plt.axvline(x=0, color='k')
-plt.grid(True, which='both')
-plt.show()
-#######################################################
-# Martingala apuesta a color con capital acostado en 5 tiradas distintas
 # Martingala apuesta a color con capital infinito en 5 tiradas distintas
-# Martingala apuesta a color con capital infinito
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(martingala(tiradas[i], APUESTAS.NEGRO,
+                        apuestaInicial, capitalInicial,
+                        apuestaMax, False))
+    i += 1
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+#######################################################
+# Paroli apuesta a color con capital acotado (5 en una)
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+#######################################################
+# Paroli apuesta a color con capital infinito (5 en una)
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
 # plt.plot(paroli([2,2,1,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
 # plt.plot(paroli([1,2,2,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
 # plt.plot(paroli([2,2,2,2,2], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
