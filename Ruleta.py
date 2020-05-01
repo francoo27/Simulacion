@@ -61,8 +61,10 @@ def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
     capital = [100]
     apuesta = 1
     for i in tirada:
-        # print('Tengo:', capital[-1])
-        # print('Apueto: ', apuesta)
+        print('Tengo:', capital[-1])
+        print('Apueto: ', apuesta)
+        if (capital[-1] >= maxPer)
+            return capital
 
         if (capital[-1] - apuesta) < 0:
             # print('No me alcanza')
