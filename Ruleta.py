@@ -21,7 +21,8 @@ class NIVELECONOMICO:
 class APUESTAS:
     PAR = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36]
     IMPAR = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]
-    NEGRO = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+    NEGRO = [2, 4, 6, 8, 10, 11, 13, 15, 17,
+             20, 22, 24, 26, 28, 29, 31, 33, 35]
     ROJO = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
     PRIMER_DOCE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     SEGUNDO_DOCE = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
@@ -29,8 +30,10 @@ class APUESTAS:
     PRIMER_COLUMNA = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
     SEGUNDA_COLUMNA = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
     TERCERA_COLUMNA = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
-    UNO_A_DIECIOCHO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18]
-    DIECIOCHO_A_TREINTISEIS = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+    UNO_A_DIECIOCHO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                       11, 12, 13, 14, 15, 16, 18]
+    DIECIOCHO_A_TREINTISEIS = [18, 19, 20, 21, 22, 23, 24, 25, 26,
+                               27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
@@ -54,7 +57,7 @@ def fillTiradas(tiradas, repeticiones):
 
 
 def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
-               apuestaMax, minPer=0, maxPer=0, acotado=False):
+               apuestaMax, acotado, minPer=0, maxPer=0):
     capital = [capitalInicial]
     apuesta = apuestaInicial
     apuestaLength = len(tipoApuesta)
@@ -63,9 +66,6 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
         # print('Apueto: ', apuesta)
         # if (capital[-1] >= maxPer and maxPer != 0):
         #     return capital
-        if(acotado):
-            if (capital[-1] - apuesta) < 0:
-                break
         if i in tipoApuesta:
             capital.append((capital[-1]-apuesta) +
                            apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
@@ -73,12 +73,15 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
         else:
             apuesta = apuesta * 2
             if (apuesta > apuestaMax):
-                apuesta = apuestaMax     
+                apuesta = apuestaMax   
             capital.append(capital[-1] - apuesta)
+        if(acotado):
+            if (capital[-1] - apuesta) < 0:
+                return capital
     return capital
 
 
-def getFlujoDeCaja(jugadas,apuestaInicial):
+def getFlujoDeCaja(jugadas, apuestaInicial):
     i = 0
     j = 0
     k = 0
@@ -114,8 +117,7 @@ def fibonacci(n):
         return temp_fib
 
 
-##### PAROLI ######
-
+# #### PAROLI ######
 def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial):
     apuesta = apuestaInicial
     capital = [capitalInicial]
@@ -126,7 +128,7 @@ def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial):
         print('Apueto: ', apuesta)
 
         if (capital[-1] - apuesta) < 0:
-#             print('No me alcanza')
+            # print('No me alcanza')
             break
 
         if i in tipoApuesta:
@@ -163,7 +165,7 @@ def estraFib(tirada, tipoApuesta):
 
         if i in APUESTAS.NEGRO:
             capital.append((capital[-1]-apuesta) +
-                apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
+                           apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
             c = c - 2
             if c < 0:
                 c = 0
@@ -190,10 +192,13 @@ def getFrecuenciaRelativa(tirada):
         c += 1
     return cont
 
-# MAIN LOOP ################
+
+#######################################################
+# Comienzo programa
+#######################################################
+# Inicializacion de arrays
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
-# # jugadas = 5*[[[0]]]
 jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 # i = 0
 # contadordeceros = 0
@@ -203,16 +208,46 @@ jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 #         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
 #     i += 1
 # print(contadordeceros)
+#######################################################
+# Variables comienzo
 capitalInicial = 100
 apuestaInicial = 5
-jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50,True)
-jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50)
+apuestaMax = 50
+#######################################################
+# Martingala apuesta a color con capital acotado
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO,
+                        apuestaInicial, capitalInicial,
+                        apuestaMax, True)
 plt.plot(jugadas[0], color[0])
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+plt.subplot()
+#######################################################
+# Martingala apuesta a color con capital infinito
+jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO,
+                        apuestaInicial, capitalInicial,
+                        apuestaMax, False)
 plt.plot(jugadas[1], color[1])
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+#######################################################
+# Martingala apuesta a color con capital acostado en 5 tiradas distintas
+# Martingala apuesta a color con capital infinito en 5 tiradas distintas
+# Martingala apuesta a color con capital infinito
 # plt.plot(paroli([2,2,1,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
 # plt.plot(paroli([1,2,2,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
 # plt.plot(paroli([2,2,2,2,2], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
-plt.show()
+# plt.show()
 # jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50)
 # jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, apuestaInicial,50)
 # jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, apuestaInicial,50)
@@ -225,13 +260,7 @@ plt.show()
 #     i += 1
 # plt.plot(getFlujoDeCaja(jugadas,apuestaInicial),'g-')
 # # plt.plot(estraFib(tiradas[0]))
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
+
 # print(getFrecuenciaRelativa(tiradas[0])[0])
 # print(getFrecuenciaRelativa(tiradas[0])[1])
 # print(getFrecuenciaRelativa(tiradas[0])[2])
