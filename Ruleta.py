@@ -54,7 +54,7 @@ def fillTiradas(tiradas, repeticiones):
 
 
 def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
-               apuestaMax, minPer=0,maxPer=0):
+               apuestaMax, minPer=0, maxPer=0, acotado=False):
     capital = [capitalInicial]
     apuesta = apuestaInicial
     apuestaLength = len(tipoApuesta)
@@ -63,9 +63,9 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
         # print('Apueto: ', apuesta)
         # if (capital[-1] >= maxPer and maxPer != 0):
         #     return capital
-
-        if (capital[-1] - apuesta) < 0:
-            break
+        if(acotado):
+            if (capital[-1] - apuesta) < 0:
+                break
         if i in tipoApuesta:
             capital.append((capital[-1]-apuesta) +
                            apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
@@ -78,7 +78,7 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
     return capital
 
 
-def getFlujoDeCaja(jugadas):
+def getFlujoDeCaja(jugadas,apuestaInicial):
     i = 0
     j = 0
     k = 0
@@ -93,7 +93,7 @@ def getFlujoDeCaja(jugadas):
         pasoCaja = 0
         while j < len(jugadas):
             if(i < len(jugadas[j])):
-                pasoCaja += 100-jugadas[j][i]
+                pasoCaja += apuestaInicial-jugadas[j][i]
             j += 1
         caja.append(pasoCaja)    
         i += 1 
@@ -116,9 +116,9 @@ def fibonacci(n):
 
 ##### PAROLI ######
 
-def paroli(tiradas, tipoApuesta):
-    apuesta = 5
-    capital = [100]
+def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial):
+    apuesta = apuestaInicial
+    capital = [capitalInicial]
     cont = 1
     apuestaLength = len(tipoApuesta)
     for i in tiradas:
@@ -135,11 +135,11 @@ def paroli(tiradas, tipoApuesta):
             cont += 1
             if cont == 4:
                 cont = 1
-            apuesta = 5 * cont
+            apuesta = apuestaInicial * cont
             print('Gano')
         else:
             capital.append(capital[-1] - apuesta)
-            apuesta = 5
+            apuesta = apuestaInicial
             cont = 1
             print('Pierdo')
     return capital
@@ -194,7 +194,7 @@ def getFrecuenciaRelativa(tirada):
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
 # # jugadas = 5*[[[0]]]
-# jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
+jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
 # i = 0
 # contadordeceros = 0
 # while i < len(tiradas[0]):
@@ -203,17 +203,27 @@ fillTiradas(tiradas, CONSTANT.REPETICIONES)
 #         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
 #     i += 1
 # print(contadordeceros)
-# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, 100,50)
-# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, 100,50)
-# # jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, 100,50)
-# # jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, 100,50)
-# # jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, 100,50)
+capitalInicial = 100
+apuestaInicial = 5
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50,True)
+jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50)
+plt.plot(jugadas[0], color[0])
+plt.plot(jugadas[1], color[1])
+# plt.plot(paroli([2,2,1,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
+# plt.plot(paroli([1,2,2,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
+# plt.plot(paroli([2,2,2,2,2], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
+plt.show()
+# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50)
+# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, apuestaInicial,50)
+# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, apuestaInicial,50)
+# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, apuestaInicial,50)
+# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, apuestaInicial,50)
 # # print(jugadas)
 # i = 0
 # while i < CONSTANT.REPETICIONES:
 #     plt.plot(jugadas[i], color[i])
 #     i += 1
-# plt.plot(getFlujoDeCaja(jugadas),'g-')
+# plt.plot(getFlujoDeCaja(jugadas,apuestaInicial),'g-')
 # # plt.plot(estraFib(tiradas[0]))
 # plt.suptitle('Apuestas')
 # plt.ylabel('Capital')
@@ -222,24 +232,23 @@ fillTiradas(tiradas, CONSTANT.REPETICIONES)
 # plt.axvline(x=0, color='k')
 # plt.grid(True, which='both')
 # plt.show()
+# print(getFrecuenciaRelativa(tiradas[0])[0])
+# print(getFrecuenciaRelativa(tiradas[0])[1])
+# print(getFrecuenciaRelativa(tiradas[0])[2])
 
-print(getFrecuenciaRelativa(tiradas[0])[0])
-print(getFrecuenciaRelativa(tiradas[0])[1])
-print(getFrecuenciaRelativa(tiradas[0])[2])
 
+# # Pie chart, where the slices will be ordered and plotted counter-clockwise:
+# labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
+# sizes = [15, 30, 45, 10]
+# explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
-# Pie chart, where the slices will be ordered and plotted counter-clockwise:
-labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
-sizes = [15, 30, 45, 10]
-explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
-
-fig1, ax1 = plt.subplots()
-ax1.pie(getFrecuenciaRelativa(tiradas[0]), colors=['green', 'black', 'red'],
-        autopct='%1.1f%%', textprops={'color': "w"},
-        shadow=True, startangle=90)
-ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-ax1.legend(['Cero', 'Negro', 'Rojo'], loc="upper right")
-plt.show()
+# fig1, ax1 = plt.subplots()
+# ax1.pie(getFrecuenciaRelativa(tiradas[0]), colors=['green', 'black', 'red'],
+#         autopct='%1.1f%%', textprops={'color': "w"},
+#         shadow=True, startangle=90)
+# ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+# ax1.legend(['Cero', 'Negro', 'Rojo'], loc="upper right")
+# plt.show()
 # plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
 # plt.suptitle('Apuestas')
 # plt.ylabel('Capital')
