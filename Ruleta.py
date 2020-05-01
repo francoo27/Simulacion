@@ -34,7 +34,7 @@ class APUESTAS:
 
 
 colors = ['red', 'blue', 'green', 'yellow', 'purple']
-color = ['r-o', 'k-o', 'g-o', 'y-o', 'b-o']
+color = ['r', 'k', 'g', 'y', 'b']
 
 
 def getTirada(quantity, maxValue):
@@ -53,13 +53,11 @@ def fillTiradas(tiradas, repeticiones):
         c += 1
 
 
-# def getTableSim(players,spins):
-#     tableSim = players*[spins*[0]]
-
-
-def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
-    capital = [100]
-    apuesta = 1
+def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
+               maxPer=0, minPer=0):
+    capital = [capitalInicial]
+    apuesta = apuestaInicial
+    apuestaLength = len(tipoApuesta)
     for i in tirada:
         print('Tengo:', capital[-1])
         print('Apueto: ', apuesta)
@@ -67,27 +65,38 @@ def martingala(tirada, tipoApuesta, maxPer=0, minPer=0):
             return capital
 
         if (capital[-1] - apuesta) < 0:
-            # print('No me alcanza')
             break
-
         if i in tipoApuesta:
-            capital.append(capital[-1] + apuesta)
-            apuesta = 1
-            # print('Gano')
+            capital.append((capital[-1]-apuesta) +
+                           apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
+            apuesta = apuestaInicial
         else:
             capital.append(capital[-1] - apuesta)
             apuesta = apuesta * 2
-            # print('Pierdo')
-
-    # plt.suptitle('Apuestas')
-    # plt.ylabel('Capital')
-    # plt.xlabel('Tiradas')
-    # plt.plot(capital)
-    # plt.show()
-    # respuesta = [[CONSTANT.TIRADAS*[0]],0]
-    # respuesta[0] = capital
-    # respuesta[1] = color
     return capital
+
+
+def getFlujoDeCaja(jugadas):
+    i = 0
+    j = 0
+    k = 0
+    maxlen = 0
+    caja = []
+    while k < len(jugadas):
+        if len(jugadas[k]) > maxlen:
+            maxlen = len(jugadas[k])
+        k += 1
+    while i < maxlen:
+        j = 0
+        while j < len(jugadas):
+            pasoCaja = 0
+            if(i < len(jugadas[j])):
+                # print(jugadas[j][i])
+                pasoCaja += 100-jugadas[j][i]
+            j += 1
+            caja.append(pasoCaja)
+        i += 1
+    # print(caja)
 
 
 # MAIN LOOP ################
@@ -167,6 +176,27 @@ def estraFib(tirada):
 # MAIN LOOP ################
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
+jugadas = 5*[[[0]]]
+jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
+i = 0
+contadordeceros=0
+while i < len(tiradas[0]):
+    if (tiradas[0][i] == 0):
+        contadordeceros+=1
+        plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
+    i += 1
+print(contadordeceros)
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 1, 100)
+jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 1, 100)
+jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 1, 100)
+jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 1, 100)
+jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 1, 100)
+# getFlujoDeCaja(jugadas)
+print(jugadas)
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(jugadas[i], color[i])
+    i += 1
 plt.plot(estraFib(tiradas[0]))
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
@@ -175,6 +205,5 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
-
 
 
