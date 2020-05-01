@@ -5,9 +5,9 @@ import pandas as pd
 
 
 class CONSTANT:
-    TIRADAS = 50
+    TIRADAS = 500
     EUROPEA = 37
-    REPETICIONES = 5
+    REPETICIONES = 2
     INPUT = 6
 
 
@@ -54,15 +54,15 @@ def fillTiradas(tiradas, repeticiones):
 
 
 def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
-               maxPer=0, minPer=0):
+               apuestaMax, minPer=0,maxPer=0):
     capital = [capitalInicial]
     apuesta = apuestaInicial
     apuestaLength = len(tipoApuesta)
     for i in tirada:
-        print('Tengo:', capital[-1])
-        print('Apueto: ', apuesta)
-        if (capital[-1] >= maxPer and maxPer != 0):
-            return capital
+        # print('Tengo:', capital[-1])
+        # print('Apueto: ', apuesta)
+        # if (capital[-1] >= maxPer and maxPer != 0):
+        #     return capital
 
         if (capital[-1] - apuesta) < 0:
             break
@@ -71,8 +71,10 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
                            apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
             apuesta = apuestaInicial
         else:
-            capital.append(capital[-1] - apuesta)
             apuesta = apuesta * 2
+            if (apuesta > apuestaMax):
+                apuesta = apuestaMax     
+            capital.append(capital[-1] - apuesta)
     return capital
 
 
@@ -88,15 +90,14 @@ def getFlujoDeCaja(jugadas):
         k += 1
     while i < maxlen:
         j = 0
+        pasoCaja = 0
         while j < len(jugadas):
-            pasoCaja = 0
             if(i < len(jugadas[j])):
-                # print(jugadas[j][i])
                 pasoCaja += 100-jugadas[j][i]
             j += 1
-            caja.append(pasoCaja)
-        i += 1
-    # print(caja)
+        caja.append(pasoCaja)    
+        i += 1 
+    return caja
 
 
 FibArray = [0, 1]
@@ -112,6 +113,36 @@ def fibonacci(n):
         FibArray.append(temp_fib)
         return temp_fib
 
+
+##### PAROLI ######
+
+def paroli(tiradas, tipoApuesta):
+    apuesta = 5
+    capital = [100]
+    cont = 1
+    apuestaLength = len(tipoApuesta)
+    for i in tiradas:
+        print('Tengo:', capital[-1])
+        print('Apueto: ', apuesta)
+
+        if (capital[-1] - apuesta) < 0:
+#             print('No me alcanza')
+            break
+
+        if i in tipoApuesta:
+            capital.append((capital[-1]-apuesta) +
+                           apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
+            cont += 1
+            if cont == 4:
+                cont = 1
+            apuesta = 5 * cont
+            print('Gano')
+        else:
+            capital.append(capital[-1] - apuesta)
+            apuesta = 5
+            cont = 1
+            print('Pierdo')
+    return capital
 
 # fibonacci(100)
 # FibArray.pop(0)
@@ -150,68 +181,27 @@ def estraFib(tirada, tipoApuesta):
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
 # jugadas = 5*[[[0]]]
-# jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
-# i = 0
-# contadordeceros = 0
-# while i < len(tiradas[0]):
-#     if (tiradas[0][i] == 0):
-#         contadordeceros += 1
-#         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
-#     i += 1
-# print(contadordeceros)
-# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 1, 100)
-# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 1, 100)
-# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 1, 100)
-# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 1, 100)
-# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 1, 100)
-# # getFlujoDeCaja(jugadas)
+jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
+i = 0
+contadordeceros = 0
+while i < len(tiradas[0]):
+    if (tiradas[0][i] == 0):
+        contadordeceros += 1
+        plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
+    i += 1
+print(contadordeceros)
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, 100,50)
+jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, 100,50)
+# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, 100,50)
+# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, 100,50)
+# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, 100,50)
 # print(jugadas)
-# i = 0
-# while i < CONSTANT.REPETICIONES:
-#     plt.plot(jugadas[i], color[i])
-#     i += 1
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(jugadas[i], color[i])
+    i += 1
+plt.plot(getFlujoDeCaja(jugadas),'g-')
 # plt.plot(estraFib(tiradas[0]))
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
-
-
-##### PAROLI ######
-
-def paroli(tiradas, tipoApuesta):
-    apuesta = 5
-    capital = [100]
-    cont = 1
-    apuestaLength = len(tipoApuesta)
-    for i in tiradas:
-        print('Tengo:', capital[-1])
-        print('Apueto: ', apuesta)
-
-        # if (capital[-1] - apuesta) < 0:
-        #     print('No me alcanza')
-        #     break
-
-        if i in tipoApuesta:
-            capital.append((capital[-1]-apuesta) +
-                           apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
-            cont += 1
-            if cont == 4:
-                cont = 1
-            apuesta = 5 * cont
-            print('Gano')
-        else:
-            capital.append(capital[-1] - apuesta)
-            apuesta = 5
-            cont = 1
-            print('Pierdo')
-    return capital
-
-
-plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
 plt.xlabel('Tiradas')
@@ -219,3 +209,14 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
+
+
+
+# plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.axhline(y=0, color='k')
+# plt.axvline(x=0, color='k')
+# plt.grid(True, which='both')
+# plt.show()
