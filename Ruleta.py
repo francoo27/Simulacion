@@ -117,7 +117,7 @@ fibonacci(100)
 FibArray.pop(0)
 
 
-def estraFib(tirada):
+def estraFib(tirada, tipoApuesta):
     capital = [100]
     c = 0
     apuesta = FibArray[c]
@@ -138,7 +138,7 @@ def estraFib(tirada):
             # print('Gano')
         else:
             capital.append(capital[-1] - apuesta)
-            c += 1   
+            c += 1
             apuesta = FibArray[c]
             # print('Pierdo')
     return capital
