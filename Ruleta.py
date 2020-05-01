@@ -5,7 +5,7 @@ import pandas as pd
 
 
 class CONSTANT:
-    TIRADAS = 5000
+    TIRADAS = 50
     EUROPEA = 37
     REPETICIONES = 5
     INPUT = 6
@@ -21,7 +21,7 @@ class NIVELECONOMICO:
 class APUESTAS:
     PAR = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36]
     IMPAR = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]
-    NEGRO = [2, 6, 4, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+    NEGRO = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
     ROJO = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
     PRIMER_DOCE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     SEGUNDO_DOCE = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
@@ -113,24 +113,26 @@ def fibonacci(n):
         return temp_fib
 
 
-fibonacci(100)
-FibArray.pop(0)
+# fibonacci(100)
+# FibArray.pop(0)
 
 
 def estraFib(tirada, tipoApuesta):
     capital = [100]
     c = 0
     apuesta = FibArray[c]
+    apuestaLength = len(tipoApuesta)
     for i in tirada:
         print('Tengo:', capital[-1])
         print('Apueto: ', apuesta)
 
-        if (capital[-1] - apuesta) < 0:
-            # print('No me alcanza')
-            break
+        # if (capital[-1] - apuesta) < 0:
+        #     print('No me alcanza')
+        #     break
 
         if i in APUESTAS.NEGRO:
-            capital.append(capital[-1] + apuesta)
+            capital.append((capital[-1]-apuesta) +
+                apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
             c = c - 2
             if c < 0:
                 c = 0
@@ -147,28 +149,69 @@ def estraFib(tirada, tipoApuesta):
 # MAIN LOOP ################
 tiradas = CONSTANT.REPETICIONES*[CONSTANT.TIRADAS*[0]]
 fillTiradas(tiradas, CONSTANT.REPETICIONES)
-jugadas = 5*[[[0]]]
-jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
-i = 0
-contadordeceros = 0
-while i < len(tiradas[0]):
-    if (tiradas[0][i] == 0):
-        contadordeceros += 1
-        plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
-    i += 1
-print(contadordeceros)
-jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 1, 100)
-jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 1, 100)
-jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 1, 100)
-jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 1, 100)
-jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 1, 100)
-# getFlujoDeCaja(jugadas)
-print(jugadas)
-i = 0
-while i < CONSTANT.REPETICIONES:
-    plt.plot(jugadas[i], color[i])
-    i += 1
-plt.plot(estraFib(tiradas[0]))
+# jugadas = 5*[[[0]]]
+# jugadas = [[0]*CONSTANT.TIRADAS for i in range(CONSTANT.REPETICIONES)]
+# i = 0
+# contadordeceros = 0
+# while i < len(tiradas[0]):
+#     if (tiradas[0][i] == 0):
+#         contadordeceros += 1
+#         plt.axvline(x=i, ymin=0, ymax=15000, linestyle='dashed')
+#     i += 1
+# print(contadordeceros)
+# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 1, 100)
+# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 1, 100)
+# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 1, 100)
+# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 1, 100)
+# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 1, 100)
+# # getFlujoDeCaja(jugadas)
+# print(jugadas)
+# i = 0
+# while i < CONSTANT.REPETICIONES:
+#     plt.plot(jugadas[i], color[i])
+#     i += 1
+# plt.plot(estraFib(tiradas[0]))
+# plt.suptitle('Apuestas')
+# plt.ylabel('Capital')
+# plt.xlabel('Tiradas')
+# plt.axhline(y=0, color='k')
+# plt.axvline(x=0, color='k')
+# plt.grid(True, which='both')
+# plt.show()
+
+
+##### PAROLI ######
+
+def paroli(tiradas, tipoApuesta):
+    apuesta = 5
+    capital = [100]
+    cont = 1
+    apuestaLength = len(tipoApuesta)
+    for i in tiradas:
+        print('Tengo:', capital[-1])
+        print('Apueto: ', apuesta)
+
+        # if (capital[-1] - apuesta) < 0:
+        #     print('No me alcanza')
+        #     break
+
+        if i in tipoApuesta:
+            capital.append((capital[-1]-apuesta) +
+                           apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
+            cont += 1
+            if cont == 4:
+                cont = 1
+            apuesta = 5 * cont
+            print('Gano')
+        else:
+            capital.append(capital[-1] - apuesta)
+            apuesta = 5
+            cont = 1
+            print('Pierdo')
+    return capital
+
+
+plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
 plt.xlabel('Tiradas')
