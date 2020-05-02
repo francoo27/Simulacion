@@ -297,45 +297,13 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
-# plt.plot(paroli([2,2,1,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
-# plt.plot(paroli([1,2,2,2,1], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
-# plt.plot(paroli([2,2,2,2,2], APUESTAS.NEGRO,apuestaInicial,capitalInicial), '-o')
-# plt.show()
-# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO, 5, apuestaInicial,50)
-# jugadas[1] = martingala(tiradas[0], APUESTAS.ROJO, 5, apuestaInicial,50)
-# jugadas[2] = martingala(tiradas[0], APUESTAS.PRIMER_DOCE, 25, apuestaInicial,50)
-# jugadas[3] = martingala(tiradas[0], APUESTAS.SEGUNDO_DOCE, 25, apuestaInicial,50)
-# jugadas[4] = martingala(tiradas[0], APUESTAS.TERCER_DOCE, 25, apuestaInicial,50)
-# # print(jugadas)
-# i = 0
-# while i < CONSTANT.REPETICIONES:
-#     plt.plot(jugadas[i], color[i])
-#     i += 1
-# plt.plot(getFlujoDeCaja(jugadas,apuestaInicial),'g-')
-# # plt.plot(estraFib(tiradas[0]))
+#######################################################
+# Grafico de frecuencia relativa
+fig1, ax1 = plt.subplots()
+ax1.pie(getFrecuenciaRelativa(tiradas[0]), colors=['green', 'black', 'red'],
+        autopct='%1.1f%%', textprops={'color': "w"},
+        shadow=True, startangle=90)
+ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+ax1.legend(['Cero', 'Negro', 'Rojo'], loc="upper right")
+plt.show()
 
-# print(getFrecuenciaRelativa(tiradas[0])[0])
-# print(getFrecuenciaRelativa(tiradas[0])[1])
-# print(getFrecuenciaRelativa(tiradas[0])[2])
-
-
-# # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-# labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
-# sizes = [15, 30, 45, 10]
-# explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
-
-# fig1, ax1 = plt.subplots()
-# ax1.pie(getFrecuenciaRelativa(tiradas[0]), colors=['green', 'black', 'red'],
-#         autopct='%1.1f%%', textprops={'color': "w"},
-#         shadow=True, startangle=90)
-# ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-# ax1.legend(['Cero', 'Negro', 'Rojo'], loc="upper right")
-# plt.show()
-# plt.plot(paroli(tiradas[0], APUESTAS.NEGRO), '-o')
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
