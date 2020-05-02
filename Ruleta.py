@@ -66,6 +66,9 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
         # print('Apueto: ', apuesta)
         # if (capital[-1] >= maxPer and maxPer != 0):
         #     return capital
+        if(acotado):
+            if (capital[-1] - apuesta) < 0:
+                return capital
         if i in tipoApuesta:
             capital.append((capital[-1]-apuesta) +
                            apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
@@ -75,9 +78,6 @@ def martingala(tirada, tipoApuesta, apuestaInicial, capitalInicial,
             if (apuesta > apuestaMax):
                 apuesta = apuestaMax   
             capital.append(capital[-1] - apuesta)
-        if(acotado):
-            if (capital[-1] - apuesta) < 0:
-                return capital
     return capital
 
 
@@ -118,19 +118,18 @@ def fibonacci(n):
 
 
 # #### PAROLI ######
-def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial):
+def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial, acotado):
     apuesta = apuestaInicial
     capital = [capitalInicial]
     cont = 1
     apuestaLength = len(tipoApuesta)
     for i in tiradas:
-        print('Tengo:', capital[-1])
-        print('Apueto: ', apuesta)
-
-        if (capital[-1] - apuesta) < 0:
-            # print('No me alcanza')
-            break
-
+        # print('Tengo:', capital[-1])
+        # print('Apueto: ', apuesta)
+        if(acotado):
+            if(capital[-1] - apuesta) < 0:
+                # print('No me alcanza')
+                return capital
         if i in tipoApuesta:
             capital.append((capital[-1]-apuesta) +
                            apuesta*((CONSTANT.EUROPEA-1)/apuestaLength))
@@ -138,12 +137,12 @@ def paroli(tiradas, tipoApuesta, apuestaInicial, capitalInicial):
             if cont == 4:
                 cont = 1
             apuesta = apuestaInicial * cont
-            print('Gano')
+            # print('Gano')
         else:
             capital.append(capital[-1] - apuesta)
             apuesta = apuestaInicial
             cont = 1
-            print('Pierdo')
+            # print('Pierdo')
     return capital
 
 # fibonacci(100)
@@ -214,33 +213,33 @@ capitalInicial = 100
 apuestaInicial = 5
 apuestaMax = 50
 # #######################################################
-# # Martingala apuesta a color con capital acotado
-# jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO,
-#                         apuestaInicial, capitalInicial,
-#                         apuestaMax, True)
-# plt.plot(jugadas[0], color[0])
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
-# plt.subplot()
+# Martingala apuesta a color con capital acotado
+jugadas[0] = martingala(tiradas[0], APUESTAS.NEGRO,
+                        apuestaInicial, capitalInicial,
+                        apuestaMax, True)
+plt.plot(jugadas[0], color[0])
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+plt.subplot()
 # #######################################################
 # # Martingala apuesta a color con capital infinito
-# jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO,
-#                         apuestaInicial, capitalInicial,
-#                         apuestaMax, False)
-# plt.plot(jugadas[1], color[1])
-# plt.suptitle('Apuestas')
-# plt.ylabel('Capital')
-# plt.xlabel('Tiradas')
-# plt.axhline(y=0, color='k')
-# plt.axvline(x=0, color='k')
-# plt.grid(True, which='both')
-# plt.show()
-#######################################################
+jugadas[1] = martingala(tiradas[0], APUESTAS.NEGRO,
+                        apuestaInicial, capitalInicial,
+                        apuestaMax, False)
+plt.plot(jugadas[1], color[1])
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+######################################################
 # Martingala apuesta a color con capital acotado en 5 tiradas distintas
 i = 0
 while i < CONSTANT.REPETICIONES:
@@ -255,8 +254,8 @@ plt.axhline(y=0, color='k')
 plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
-#######################################################
-# Martingala apuesta a color con capital infinito en 5 tiradas distintas
+# #######################################################
+# # Martingala apuesta a color con capital infinito en 5 tiradas distintas
 i = 0
 while i < CONSTANT.REPETICIONES:
     plt.plot(martingala(tiradas[i], APUESTAS.NEGRO,
@@ -272,6 +271,11 @@ plt.grid(True, which='both')
 plt.show()
 #######################################################
 # Paroli apuesta a color con capital acotado (5 en una)
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(paroli(tiradas[i], APUESTAS.NEGRO, apuestaInicial,
+                    capitalInicial, True))
+    i += 1
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
 plt.xlabel('Tiradas')
@@ -281,6 +285,11 @@ plt.grid(True, which='both')
 plt.show()
 #######################################################
 # Paroli apuesta a color con capital infinito (5 en una)
+i = 0
+while i < CONSTANT.REPETICIONES:
+    plt.plot(paroli(tiradas[i], APUESTAS.NEGRO, apuestaInicial,
+                    capitalInicial, False))
+    i += 1
 plt.suptitle('Apuestas')
 plt.ylabel('Capital')
 plt.xlabel('Tiradas')
