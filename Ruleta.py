@@ -270,6 +270,28 @@ plt.axvline(x=0, color='k')
 plt.grid(True, which='both')
 plt.show()
 #######################################################
+# Paroli apuesta a color con capital acotado
+plt.plot(paroli(tiradas[0], APUESTAS.NEGRO, apuestaInicial,
+                capitalInicial, True))
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+#######################################################
+# Paroli apuesta a color con capital infinito
+plt.plot(paroli(tiradas[0], APUESTAS.NEGRO, apuestaInicial,
+                capitalInicial, False))
+plt.suptitle('Apuestas')
+plt.ylabel('Capital')
+plt.xlabel('Tiradas')
+plt.axhline(y=0, color='k')
+plt.axvline(x=0, color='k')
+plt.grid(True, which='both')
+plt.show()
+#######################################################
 # Paroli apuesta a color con capital acotado (5 en una)
 i = 0
 while i < CONSTANT.REPETICIONES:
@@ -306,4 +328,9 @@ ax1.pie(getFrecuenciaRelativa(tiradas[0]), colors=['green', 'black', 'red'],
 ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 ax1.legend(['Cero', 'Negro', 'Rojo'], loc="upper right")
 plt.show()
-
+#######################################################
+# Data para tabla de frecuencias
+i = 0
+while i < CONSTANT.REPETICIONES:
+    print(getFrecuenciaRelativa(tiradas[i]))
+    i+=1
