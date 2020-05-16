@@ -181,6 +181,5 @@ def pruebaDeHuecos(arr):
     else:
         print(('\033[91m'+' %(0)s SE RECHAZA HIPOTESIS'+'\033[0m') % {'0':str(TABLA[4][maxIndex]) + ' > ' + str(DMCrit)})
     print('---------------------------------------------------------------------------')
-# pruebaDeHuecos(numeros)
-# pruebaDeHuecos(llenarVectorAleatorio())
-print(GenerarValoresPorGCL(17, 16, 5, 3))
+pruebaDeHuecos(numeros)
+pruebaDeHuecos(llenarVectorAleatorio())
