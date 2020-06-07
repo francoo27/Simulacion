@@ -75,47 +75,44 @@ def truncate(number, digits) -> float:
 
 simulationUUID = uuid.uuid4()
 numberOfGeneratedValues = 5000 
-# arrAux = []
 lmda = 7
-
 
 # Valores teoricos de distribucion de poisson
 teoryPoisson = getTheoryPoisson(lmda,25,5000)
-
-
-
-
-
 #Grafico de frecuencia generada por el equipo
 teamPoisson = getRandompoissonArray(lmda,numberOfGeneratedValues)
-# print(getRandompoissonArray(lmda,numberOfGeneratedValues))
-# plt.xticks(arrAux)
-# plt.bar(getArrayFilledWithSecuencialNumbers(max(arr)),getCount(arr))
-plt.plot(getArrayFilledWithSecuencialNumbers(len(getFrecuency(teamPoisson))-1),getFrecuency(teamPoisson),'g--')
-plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,'r-o')
-x = pt()
-##f= open("Distribuciones" + str(simulationUUID) + ".txt","w+")
-# x.title = 'Resultados de simulacion utilizando valores generados por el equipo'
-# x.field_names = ["Numero", "Frecuencia obtenida", "Probabilidad esperada", "Variacion con respecto a teorica"]
-# i=0
-# for e in teamPoisson:
-#     print(teoryPoisson[i])
-#     x.add_row([i,truncate(e,7),truncate(teoryPoisson[i],7),truncate(e - teoryPoisson[i],7) ])
-#     i+=1
-
-
-
-
-# # plt.xticks(getArrayFilledWithSecuencialNumbers(max(libPoisson)))
-# # plt.bar(getArrayFilledWithSecuencialNumbers(max(libPoisson)),getCount(libPoisson))
+#Grafico de frecuencia generada por libreria
+libPoisson = np.random.poisson(lam=lmda, size=numberOfGeneratedValues)
 
 #Grafico de frecuencia teorica
 plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,'r-o')
-#Grafico de frecuencia generada por libreria
-libPoisson = np.random.poisson(lam=lmda, size=numberOfGeneratedValues)
+#Grafico de frecuencia del equipo
+teamFrecuencyPoisson = getFrecuency(teamPoisson)
+plt.plot(getArrayFilledWithSecuencialNumbers(len(getFrecuency(teamPoisson))-1),teamFrecuencyPoisson,'g-o')
+# # plt.xticks(getArrayFilledWithSecuencialNumbers(max(libPoisson)))
+# # plt.bar(getArrayFilledWithSecuencialNumbers(max(libPoisson)),getCount(libPoisson))
+plt.show()
+
+
+#Grafico de frecuencia teorica
+plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,'r-o')
+#Grafico de frecuencia de la libreria
 libFrecuencyPoisson=getFrecuency(libPoisson)
 plt.plot(getArrayFilledWithSecuencialNumbers(max(libPoisson)),libFrecuencyPoisson,'b-o')
 plt.show()
+
+
+
+f= open("Distribuciones" + str(simulationUUID) + ".txt","w+")
+x = pt()
+x.title = 'Resultados de simulacion utilizando valores generados por el equipo'
+x.field_names = ["Numero", "Frecuencia obtenida", "Probabilidad esperada", "Variacion con respecto a teorica"]
+i=0
+for e in teamFrecuencyPoisson:
+    x.add_row([i,truncate(e,7),truncate(teoryPoisson[i],7),truncate(e - teoryPoisson[i],7) ])
+    i+=1
+print(x)
+f.write(x.get_string())
 
 x = pt()
 x.title = 'Resultados de simulacion utilizando la libreria de python'
@@ -125,16 +122,15 @@ for e in libFrecuencyPoisson:
     x.add_row([i,truncate(e,7),truncate(teoryPoisson[i],7),truncate(e - teoryPoisson[i],7) ])
     i+=1
 print(x)
+f.write(x.get_string())
 
 y = pt() 
 y.title = ' Media ,Varianza y Desviacion'
 y.field_names = ["Simulacion", "Media", "Varianza", "Desviacion"]
 y.add_row(["Grupo", truncate(np.mean(teamPoisson),7), truncate(np.var(teamPoisson),7), truncate(np.std(teamPoisson),7)])
 y.add_row(["Python", truncate(np.mean(libPoisson),7), truncate(np.var(libPoisson),7), truncate(np.std(libPoisson),7)])
-y.add_row(["Teoria", np.mean(teamPoisson), 1158259, np.std(teamPoisson)])
-
-
-# x.add_row(["Adelaide", 1295, 1158259, 600.5])
+y.add_row(["Teoria", lmda, lmda, truncate(mt.sqrt(lmda),7)])
 print(y)
-# f.write(x.get_string())
-# f.close()
+f.write(y.get_string())
+
+f.close()
