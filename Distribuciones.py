@@ -30,37 +30,74 @@ def getRandompoisson(lmda):
         else:
             x = x + 1
     return x
+def getRandompoissonArray(lmda,numberOfGeneratedValues):
+    arr = [0] * ( numberOfGeneratedValues )
+    i = 0
+    while i<numberOfGeneratedValues:
+        arr[i] = getRandompoisson(lmda)
+        i+=1
+    return arr
+
 
 
 def getTheoryPoisson(lmda,size,quantity):
     i = 0
     arr=[]
     while i<=size:
-        arr.append((mt.exp(-lmda)*lmda**i)/mt.factorial(i)*quantity)
+        arr.append((mt.exp(-lmda)*lmda**i)/mt.factorial(i))
         i+=1
+    return arr
+
+def getFrecuency(arr):
+    arr.sort()
+    frecuencyCounter = [0] * ( arr[-1] + 1 )
+    sizeOfArr = len(arr)
+    for e in arr:
+        frecuencyCounter[e] += 1/sizeOfArr
+    # print(arr)
+    # print(maxNumber)
+    # print(frecuencyCounter)
+    return frecuencyCounter
+
+def getCount(arr):
+    arr.sort()
+    counter = [0] * ( arr[-1] + 1 )
+    for e in arr:
+        counter[e] += 1
+    return counter
+
+def getArrayFilledWithSecuencialNumbers(maxValue):
+    arr= [0] * ( maxValue + 1 )
+    i = 0
+    while i <= maxValue:
+        arr[i] = i
+        i+=1
+    return arr
+
+def getArrayFilledWithZeroes(size):
+    arr= [0] * ( size ) 
     return arr
 
 
 numberOfGeneratedValues = 5000 
 arrAux = []
 lmda = 7
-i = 0
-while i <=25:
-    arrAux.append(i)
-    i+=1
-generatedPoissonValues = []
-fecuencyOfPoissonValues=[0] * 26
-i=0
-while i<=numberOfGeneratedValues:
-    generatedPoissonValues.append(getRandompoisson(lmda))
-    i+=1
-i=0
-while i<=numberOfGeneratedValues:   
-    fecuencyOfPoissonValues[generatedPoissonValues[i]]+=1
-    i+=1
-plt.xticks(arrAux)
-plt.bar(arrAux,fecuencyOfPoissonValues)
+#Grafico de frecuencia generada por el equipo
+arr = getRandompoissonArray(lmda,numberOfGeneratedValues)
+# print(getRandompoissonArray(lmda,numberOfGeneratedValues))
+# plt.xticks(arrAux)
+# plt.bar(getArrayFilledWithSecuencialNumbers(max(arr)),getCount(arr))
+plt.plot(getArrayFilledWithSecuencialNumbers(len(getFrecuency(arr))-1),getFrecuency(arr),color='g')
 
-plt.plot(arrAux,getTheoryPoisson(lmda,25,5000),color='r' ,label = "line 1")
+
+libPoisson = np.random.poisson(lam=lmda, size=5000)
+# plt.xticks(getArrayFilledWithSecuencialNumbers(max(libPoisson)))
+# plt.bar(getArrayFilledWithSecuencialNumbers(max(libPoisson)),getCount(libPoisson))
+#Grafico de frecuencia teorica
+teoryPoisson = getTheoryPoisson(lmda,25,5000)
+plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,color='r')
+#Grafico de frecuencia generada por libreria
+plt.plot(getArrayFilledWithSecuencialNumbers(max(libPoisson)),getFrecuency(libPoisson))
 plt.show()
-print(getTheoryPoisson(lmda,25,5000))
+
+
