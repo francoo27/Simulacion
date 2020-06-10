@@ -72,6 +72,20 @@ def truncate(number, digits) -> float:
     stepper = 10.0 ** digits
     return mt.trunc(stepper * number) / stepper
 
+def testChiCuadrado(frecuencies,expectedFrecuencies):
+    i=x=0
+    ## se va testear con un valor fijo de 1 grado de libertad y un nivel de significacia de 0.005 = 7.879
+    testVal = 7.879
+    for e in frecuencies:
+        x += ((e - expectedFrecuencies[i] )** 2) / expectedFrecuencies[i]
+        i+=1
+    return([x,x < testVal])
+
+def most_frequent(arr): 
+    return np.bincount(arr).argmax()
+
+
+
 
 simulationUUID = uuid.uuid4()
 numberOfGeneratedValues = 5000 
@@ -113,7 +127,13 @@ for e in teamFrecuencyPoisson:
     i+=1
 print(x)
 f.write(x.get_string())
-
+testChi = testChiCuadrado(libFrecuencyPoisson,teoryPoisson)
+if(testChi[1]):
+    f.write("Paso Test de chi cuadrado")
+    print("Paso Test de chi cuadrado")
+else:
+    print("No paso Test de chi cuadrado")
+    f.write("No Paso Test de chi cuadrado")   
 x = pt()
 x.title = 'Resultados de simulacion utilizando la libreria de python'
 x.field_names = ["Numero", "Frecuencia obtenida", "Probabilidad esperada", "Variacion con respecto a teorica"]
@@ -123,13 +143,21 @@ for e in libFrecuencyPoisson:
     i+=1
 print(x)
 f.write(x.get_string())
+testChi = testChiCuadrado(libFrecuencyPoisson,teoryPoisson)
+if(testChi[1]):
+    print("Paso Test de chi cuadrado")
+    f.write("Paso Test de chi cuadrado")
+else:
+    print("No paso Test de chi cuadrado")
+    f.write("No Paso Test de chi cuadrado") 
+
 
 y = pt() 
 y.title = ' Media ,Varianza y Desviacion'
-y.field_names = ["Simulacion", "Media", "Varianza", "Desviacion"]
-y.add_row(["Grupo", truncate(np.mean(teamPoisson),7), truncate(np.var(teamPoisson),7), truncate(np.std(teamPoisson),7)])
-y.add_row(["Python", truncate(np.mean(libPoisson),7), truncate(np.var(libPoisson),7), truncate(np.std(libPoisson),7)])
-y.add_row(["Teoria", lmda, lmda, truncate(mt.sqrt(lmda),7)])
+y.field_names = ["Simulacion", "Media","Moda", "Varianza", "Desviacion"]
+y.add_row(["Grupo", truncate(np.mean(teamPoisson),7),most_frequent(teamPoisson), truncate(np.var(teamPoisson),7), truncate(np.std(teamPoisson),7)])
+y.add_row(["Python", truncate(np.mean(libPoisson),7),most_frequent(libPoisson), truncate(np.var(libPoisson),7), truncate(np.std(libPoisson),7)])
+y.add_row(["Teoria", lmda, lmda-1, lmda, truncate(mt.sqrt(lmda),7)])
 print(y)
 f.write(y.get_string())
 
