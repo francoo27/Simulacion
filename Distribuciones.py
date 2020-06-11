@@ -6,8 +6,8 @@ import math as mt
 from prettytable import PrettyTable as pt
 import uuid
 
-# HIPERGEOMÉTRICA 
-# POISSON 
+
+#obtener un numero que pertenesca a la distribucion de poisson
 def getRandompoisson(lmda):
     x = 0
     tr = 1
@@ -20,6 +20,8 @@ def getRandompoisson(lmda):
         else:
             x = x + 1
     return x
+
+#obtener la un arreglo con distribucion de poisson
 def getRandompoissonArray(lmda,numberOfGeneratedValues):
     arr = [0] * ( numberOfGeneratedValues )
     i = 0
@@ -29,7 +31,7 @@ def getRandompoissonArray(lmda,numberOfGeneratedValues):
     return arr
 
 
-
+#obtener la distribucion teorica de poisson
 def getTheoryPoisson(lmda,size,quantity):
     i = 0
     arr=[]
@@ -44,9 +46,6 @@ def getFrecuency(arr):
     sizeOfArr = len(arr)
     for e in arr:
         frecuencyCounter[e] += 1/sizeOfArr
-    # print(arr)
-    # print(maxNumber)
-    # print(frecuencyCounter)
     return frecuencyCounter
 
 def getCount(arr):
@@ -85,36 +84,27 @@ def most_frequent(arr):
     return np.bincount(arr).argmax()
 
 
-
-
 simulationUUID = uuid.uuid4()
 numberOfGeneratedValues = 5000 
 lmda = 7
-
 # Valores teoricos de distribucion de poisson
 teoryPoisson = getTheoryPoisson(lmda,25,5000)
 #Grafico de frecuencia generada por el equipo
 teamPoisson = getRandompoissonArray(lmda,numberOfGeneratedValues)
 #Grafico de frecuencia generada por libreria
 libPoisson = np.random.poisson(lam=lmda, size=numberOfGeneratedValues)
-
 #Grafico de frecuencia teorica
 plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,'r-o')
 #Grafico de frecuencia del equipo
 teamFrecuencyPoisson = getFrecuency(teamPoisson)
 plt.plot(getArrayFilledWithSecuencialNumbers(len(getFrecuency(teamPoisson))-1),teamFrecuencyPoisson,'g-o')
-# # plt.xticks(getArrayFilledWithSecuencialNumbers(max(libPoisson)))
-# # plt.bar(getArrayFilledWithSecuencialNumbers(max(libPoisson)),getCount(libPoisson))
 plt.show()
-
-
 #Grafico de frecuencia teorica
 plt.plot(getArrayFilledWithSecuencialNumbers(len(teoryPoisson)-1),teoryPoisson,'r-o')
 #Grafico de frecuencia de la libreria
 libFrecuencyPoisson=getFrecuency(libPoisson)
 plt.plot(getArrayFilledWithSecuencialNumbers(max(libPoisson)),libFrecuencyPoisson,'b-o')
 plt.show()
-
 
 
 f= open("Distribuciones" + str(simulationUUID) + ".txt","w+")
@@ -129,11 +119,11 @@ print(x)
 f.write(x.get_string())
 testChi = testChiCuadrado(libFrecuencyPoisson,teoryPoisson)
 if(testChi[1]):
+    print("Paso Test de chi cuadrado",testChi[0])
     f.write("Paso Test de chi cuadrado")
-    print("Paso Test de chi cuadrado")
 else:
     print("No paso Test de chi cuadrado")
-    f.write("No Paso Test de chi cuadrado")   
+    f.write("No Paso Test de chi cuadrado",testChi[0])  
 x = pt()
 x.title = 'Resultados de simulacion utilizando la libreria de python'
 x.field_names = ["Numero", "Frecuencia obtenida", "Probabilidad esperada", "Variacion con respecto a teorica"]
@@ -145,13 +135,11 @@ print(x)
 f.write(x.get_string())
 testChi = testChiCuadrado(libFrecuencyPoisson,teoryPoisson)
 if(testChi[1]):
-    print("Paso Test de chi cuadrado")
+    print("Paso Test de chi cuadrado",testChi[0])
     f.write("Paso Test de chi cuadrado")
 else:
     print("No paso Test de chi cuadrado")
-    f.write("No Paso Test de chi cuadrado") 
-
-
+    f.write("No Paso Test de chi cuadrado",testChi[0]) 
 y = pt() 
 y.title = ' Media ,Varianza y Desviacion'
 y.field_names = ["Simulacion", "Media","Moda", "Varianza", "Desviacion"]
@@ -160,5 +148,4 @@ y.add_row(["Python", truncate(np.mean(libPoisson),7),most_frequent(libPoisson), 
 y.add_row(["Teoria", lmda, lmda-1, lmda, truncate(mt.sqrt(lmda),7)])
 print(y)
 f.write(y.get_string())
-
 f.close()
