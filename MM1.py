@@ -32,6 +32,7 @@ class Sim:
     totalDelay = 0.0
     areaQ = 0.0
     areaB = 0.0
+    simulationEnded = False
     #Listas para generar las gráficas
     clientQueueinT = []
     clockinT = []
@@ -190,12 +191,15 @@ class Sim:
         
     
 def main(simulacion):
-    while ((simulacion.clock <= 10000) or (simulacion.numberOfClientsInQueue != 0) or (simulacion.serverEstatus != SERVER_STATUS.DISPONIBLE.value)):
+    while ( (not simulacion.simulationEnded) or (simulacion.numberOfClientsInQueue != 0 ) or (simulacion.serverEstatus != SERVER_STATUS.DISPONIBLE.value)):
         simulacion.getTimeEvent()
         if simulacion.nextEvent == EVENT_TYPE.ARRRIBO.value:
             simulacion.arrival()
         else:
             simulacion.departure()
+        if (simulacion.clock > 100):
+            simulacion.simulationEnded = True
+            break
 
     #     pprint(vars(simulacion))
     #     print("eventList",simulacion.eventList)
@@ -216,7 +220,7 @@ def runSimulations(count):
         simulaciones.append(simulacion)
         i+=1
     for sim in simulaciones:
-        print(pprint(vars(sim)))
+        # print(pprint(vars(sim)))
         print('Cantidad promedio de clientes en cola:', sim.getMeanOfClientsInQueue())
         print('Promedio de utilizacion del servidor:', sim.getMeanOfServerUtilization())        
         print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
