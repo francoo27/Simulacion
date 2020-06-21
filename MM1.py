@@ -158,8 +158,7 @@ class Sim:
             return average_server_utilization
         else:
             average_server_utilization = 0
-            return average_server_utilization
-        
+            return average_server_utilization      
         
     # Demora promedio de los clientes
     def getAverageCustomerDelay(self):
@@ -169,6 +168,32 @@ class Sim:
         else:
             average_costumers_delay = 0
             return average_costumers_delay
+
+
+def getArrayFilledWithSecuencialNumbers(maxValue):
+    arr = [0] * ( maxValue + 1 )
+    i = 0
+    while i <= maxValue:
+        arr[i] = i
+        i+=1
+    return arr 
+
+
+def getCount(arr):
+    arr.sort()
+    counter = [0] * ( arr[-1] + 1 )
+    for e in arr:
+        counter[e] += 1
+    return counter
+
+
+def plotNumberOfClientsInQueue(clientQueueinT):
+    ## input clientQueueinT of instance of simulation
+    plt.xticks(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)))
+    plt.bar(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)),getCount(clientQueueinT))
+    plt.show()
+
+
 def inputNumber(message):
   while True:
     try:
@@ -179,7 +204,9 @@ def inputNumber(message):
     else:
        return userInput 
        break      
-    
+
+
+
 def main(simulacion):
     while ( (not simulacion.simulationEnded) or (simulacion.numberOfClientsInQueue != 0 ) or (simulacion.serverEstatus != SERVER_STATUS.DISPONIBLE.value)):
         simulacion.getTimeEvent()
@@ -187,7 +214,7 @@ def main(simulacion):
             simulacion.arrival()
         else:
             simulacion.departure()
-        if (simulacion.clock > 100):
+        if (simulacion.clock > 5):
             simulacion.simulationEnded = True
             break
 
@@ -204,6 +231,5 @@ def runSimulations(count):
         print('Cantidad promedio de clientes en cola:', sim.getMeanOfClientsInQueue())
         print('Promedio de utilizacion del servidor:', sim.getMeanOfServerUtilization())        
         print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
-    
 
 runSimulations(inputNumber("Ingrese el numero de simulaciones: "))
