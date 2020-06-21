@@ -160,7 +160,7 @@ def pruebaDeHuecos(arr):
         i += 1
     maxIndex = np.where(TABLA[4] == np.amax(TABLA[4]))
     maxIndex = (maxIndex[0])[0] 
-    DMCrit = (1.36/CANTNUM)
+    DMCrit = (1.36/math.sqrt(CANTNUM))
     print(' RANGO           |  FO     |  FOA    |   POA  |  PEA  |   (|PEA - POA|)    |')
     print('---------------------------------------------------------------------------')
     i = 0
