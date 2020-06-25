@@ -214,7 +214,7 @@ def main(simulacion):
             simulacion.arrival()
         else:
             simulacion.departure()
-        if (simulacion.clock > 5):
+        if (simulacion.clock > 500):
             simulacion.simulationEnded = True
             break
 
@@ -233,3 +233,15 @@ def runSimulations(count):
         print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
 
 runSimulations(inputNumber("Ingrese el numero de simulaciones: "))
+
+
+def plotServerPerformance(tsAcuminT, clockinT):
+    uti = []
+    for i in range(len(clockinT)):
+        uti.append(tsAcuminT[i]/clockinT[i])
+    plt.title('Utilización del servidor')
+    plt.plot(clockinT,uti)
+    plt.ylabel('Utilización del servidor')
+    plt.xlabel('tiempo')
+    plt.show()
+
