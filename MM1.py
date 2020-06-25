@@ -2,7 +2,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from enum import Enum
 from pprint import pprint
-
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
 simulaciones = []
 
@@ -205,7 +207,35 @@ def inputNumber(message):
        return userInput 
        break      
 
+def plotClientsInQueue(simulation):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=simulation.clockinT, y=simulation.clientQueueinT,
+                mode='lines',
+                name='lines'))
+    fig.show()
 
+def plotBoxClientsInQueue(simulation):
+        fig = go.Figure()
+        fig.add_trace(go.Box(
+            y=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,3,3,5,4,4,6,6,8,8,9,9,7,7,10,10,11,11,19,23,21,22],
+            name="All Points",
+            jitter=0.3,
+            pointpos=-1.8,
+            boxpoints='all', # represent all points
+            marker_color='rgb(7,40,89)',
+            line_color='rgb(7,40,89)'
+        ))
+        fig.show()
+
+def plotServerPerformance(tsAcuminT, clockinT):
+    uti = []
+    for i in range(len(clockinT)):
+        uti.append(tsAcuminT[i]/clockinT[i])
+    plt.title('Utilización del servidor')
+    plt.plot(clockinT,uti)
+    plt.ylabel('Utilización del servidor')
+    plt.xlabel('tiempo')
+    plt.show()
 
 def main(simulacion):
     while ( (not simulacion.simulationEnded) or (simulacion.numberOfClientsInQueue != 0 ) or (simulacion.serverEstatus != SERVER_STATUS.DISPONIBLE.value)):
@@ -235,13 +265,5 @@ def runSimulations(count):
 runSimulations(inputNumber("Ingrese el numero de simulaciones: "))
 
 
-def plotServerPerformance(tsAcuminT, clockinT):
-    uti = []
-    for i in range(len(clockinT)):
-        uti.append(tsAcuminT[i]/clockinT[i])
-    plt.title('Utilización del servidor')
-    plt.plot(clockinT,uti)
-    plt.ylabel('Utilización del servidor')
-    plt.xlabel('tiempo')
-    plt.show()
+
 
