@@ -1,65 +1,50 @@
+from tkinter import *
+from tkinter.ttk import *
+import tkinter as tk
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
-# Implement the default Matplotlib key bindings.
-from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import matplotlib 
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk)
 from matplotlib import style
-import tkinter as tk
-from tkinter import ttk
-
-import numpy as np
+from matplotlib import animation
 style.use("ggplot")
 LARGE_FONT = ("Verdana",12)
-# style.use("ggplot")
+from random import randint
 
 
-class SeaOfBTCapp(tk.Tk):
-        def __init__(self,*args,**kwargs):
-            tk.Tk.__init__(self,*args,**kwargs)
-            # tk.Tk.iconbitmap(self,default="clienticon.ico")
-            tk.Tk.wm_title(self,"MM1")
-            container = tk.Frame(self)
-            container.pack(side = "top",fill="both",expand=True)
-            container.grid_rowconfigure(0,weight=1)
-            container.grid_columnconfigure(0,weight=1)
-            self.frames ={}
-            
-            frame = StartPage(container,self)
-            frame.winfo_width = 1000
-            self.frames[StartPage] = frame
-            frame.grid(row=0,column=0,sticky="nsew")
-            self.show_frame(StartPage)
-        
-        def show_frame(self,cont):
-            frame = self.frames[cont]
-            frame.tkraise()
+root = tk.Tk()
+figure = Figure(figsize=(5, 4), dpi=100)
+a = figure.add_subplot(111)
+ffile = open("sampleData", 'w+')
+ffile.close()
 
-class StartPage(tk.Frame):
-    def __init__(self,parent,controller):
-        tk.Frame.__init__(self,parent)
-        label = tk.Label(self,text ="Simulacion MM1",font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
-        button = ttk.Button(self,text="visit page 1",
-                                command =lambda: print("AAAAAAA")  )
-        button.pack()
-        # entryExample = tk.Entry(self)
-        # entryExample.place(x = 10,
-        #                 y = 10,
-        #                 width=200,
-        #                 height=100)
-        f = Figure(figsize=(5,5),dpi=100)
-        a = f.add_subplot(111)
-        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
-        canvas = FigureCanvasTkAgg(f,self)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+xList = [0]
+yList = [0]
 
 
-app=SeaOfBTCapp()
-app.geometry("800x600")
-app.mainloop()
+def animate(i):
+    # ffile = open("sampleData", 'r')
+    # pullData = ffile.read()
+    # dataList = pullData.split('\n')
+    # xList = []
+    # yList = []
+    # for eachLine in dataList:
+    #     if len(eachLine) > 1:
+    #         x,y = eachLine.split(',')
+    #         xList.append(int(x))
+    #         yList.append(int(y))
+    xList.append(int(xList[-1]+randint(0,10)))
+    yList.append(int(yList[-1]+randint(0,10)))
+    a.clear()
+    a.plot(xList,yList)
+
+
+canvas = FigureCanvasTkAgg(figure, root)
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+toolbar = NavigationToolbar2Tk(canvas, root)
+toolbar.update()
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+ani = animation.FuncAnimation(figure, animate,interval=50)
+root.mainloop()
