@@ -266,9 +266,13 @@ def animate(i):
         main(simulacion)
         xList.append(simulacion.clock)
         yList.append(len(simulacion.queue))
+        yList2.append(simulacion.timeServiceacumulated)
         a.clear()
         a.plot(xList,yList)
+        b.clear()
+        b.plot(xList,yList2,color= 'b')
         a.axhline(y=simulacion.getMeanOfClientsInQueue(), color="black", linestyle=":")
+        b.axhline(y=simulacion.getMeanOfServerUtilization(), color="black", linestyle=":")
 
 def changeSimState(button):
     global simStopped
@@ -280,11 +284,14 @@ def changeSimState(button):
         simStopped = True
 def restartSimulation():
     global a
+    global b
     global simulacion 
-    simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
+    simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
     a.clear()
+    b.clear()
     yList.clear()
     xList.clear()
+    yList2.clear()
 
 ### GUI VARS
 simStopped = True
@@ -293,12 +300,16 @@ root = tk.Tk()
 figure = Figure(figsize=(5, 4), dpi=100)
 a = figure.add_subplot(111)
 
+figure2 = Figure(figsize=(5, 4), dpi=100)
+b = figure2.add_subplot(111)
+
 xList = []
 yList = []
+yList2 = []
 ### GUI VARS
 
 
-simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
+simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
 
 
 
@@ -308,6 +319,11 @@ leftFrame.pack( side = tk.LEFT )
 rigthFrame = Frame(root)
 rigthFrame.pack( side = tk.RIGHT )
 
+topLeftFrame = Frame(leftFrame)
+topLeftFrame.pack(side=tk.TOP)
+
+bottomLeftFrame = Frame(leftFrame)
+bottomLeftFrame.pack(side=tk.BOTTOM)
 
 RestartSimulatioButton = tk.Button(rigthFrame, text ="Reiniciar", command = restartSimulation)
 RestartSimulatioButton.pack()
@@ -321,12 +337,16 @@ scale.pack(anchor="n")
 
 
 
-canvas = FigureCanvasTkAgg(figure, leftFrame)
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-toolbar = NavigationToolbar2Tk(canvas, leftFrame)
+canvas = FigureCanvasTkAgg(figure, topLeftFrame)
+toolbar = NavigationToolbar2Tk(canvas, topLeftFrame)
 toolbar.update()
 canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
+canvas2 = FigureCanvasTkAgg(figure2, bottomLeftFrame)
+toolbar2 = NavigationToolbar2Tk(canvas2, bottomLeftFrame)
+toolbar2.update()
+canvas2.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
 ani = animation.FuncAnimation(figure, animate,interval=50)
+ani2 = animation.FuncAnimation(figure2, animate,interval=50)
 root.mainloop()
