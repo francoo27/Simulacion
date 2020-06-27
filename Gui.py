@@ -12,6 +12,8 @@ LARGE_FONT = ("Verdana",12)
 from random import randint
 
 
+simStopped = False
+
 root = tk.Tk()
 figure = Figure(figsize=(5, 4), dpi=100)
 a = figure.add_subplot(111)
@@ -33,11 +35,23 @@ def animate(i):
     #         x,y = eachLine.split(',')
     #         xList.append(int(x))
     #         yList.append(int(y))
-    xList.append(int(xList[-1]+randint(0,10)))
-    yList.append(int(yList[-1]+randint(0,10)))
-    a.clear()
-    a.plot(xList,yList)
+    if (not simStopped):
+        xList.append(int(xList[-1]+randint(0,10)))
+        yList.append(int(yList[-1]+randint(0,10)))
+        a.clear()
+        a.plot(xList,yList)
 
+def changeSimState(button):
+    global simStopped
+    if(simStopped):
+        button['text'] = "Iniciar"
+        simStopped = False
+    else:
+        button['text'] = "Parar"
+        simStopped = True
+
+StateSimulationButton = tk.Button(root, text ="Iniciar", command = lambda: changeSimState(StateSimulationButton))
+StateSimulationButton.pack()
 
 canvas = FigureCanvasTkAgg(figure, root)
 canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
