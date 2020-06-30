@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.ttk import *
+# from tkinter.ttk import *
 import tkinter as tk
 import matplotlib
 matplotlib.use("TkAgg")
@@ -293,6 +293,9 @@ def restartSimulation():
     xList.clear()
     yList2.clear()
 
+def changeScale(value):
+    simulacion.midTimeArrivals = float(value)
+    print(simulacion.midTimeArrivals)
 ### GUI VARS
 simStopped = True
 
@@ -313,11 +316,24 @@ simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0
 
 
 
+#estrutcura gui
+# --------
+# tl|tc|tr
+# --------
+# --|mc|--
+# --------
+# bl|bc|br
+# --------
+
+
 leftFrame = Frame(root)
 leftFrame.pack( side = tk.LEFT )
 
-rigthFrame = Frame(root)
-rigthFrame.pack( side = tk.RIGHT )
+centerFrame = Frame(root)
+centerFrame.pack( side = tk.LEFT )
+
+rightFrame = Frame(root)
+rightFrame.pack( side = tk.LEFT )
 
 topLeftFrame = Frame(leftFrame)
 topLeftFrame.pack(side=tk.TOP)
@@ -325,15 +341,16 @@ topLeftFrame.pack(side=tk.TOP)
 bottomLeftFrame = Frame(leftFrame)
 bottomLeftFrame.pack(side=tk.BOTTOM)
 
-RestartSimulatioButton = tk.Button(rigthFrame, text ="Reiniciar", command = restartSimulation)
+
+RestartSimulatioButton = tk.Button(centerFrame, text ="Reiniciar", command = restartSimulation)
 RestartSimulatioButton.pack()
-StateSimulationButton = tk.Button(rigthFrame, text ="Iniciar", command = lambda: changeSimState(StateSimulationButton))
+StateSimulationButton = tk.Button(centerFrame, text ="Iniciar", command = lambda: changeSimState(StateSimulationButton))
 StateSimulationButton.pack()
 
 
-var = DoubleVar()
-scale = Scale( rigthFrame, variable = var )
-scale.pack(anchor="n")
+Scalevar = DoubleVar().set(0.5)
+Scale = Scale( centerFrame, variable = Scalevar ,from_ = 0.1 , to = 0.98, digits = 3, resolution = 0.01,command =changeScale)
+Scale.pack(anchor="n")
 
 
 
@@ -347,6 +364,6 @@ toolbar2 = NavigationToolbar2Tk(canvas2, bottomLeftFrame)
 toolbar2.update()
 canvas2.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
-ani = animation.FuncAnimation(figure, animate,interval=50)
-ani2 = animation.FuncAnimation(figure2, animate,interval=50)
+ani = animation.FuncAnimation(figure, animate,interval=200)
+ani2 = animation.FuncAnimation(figure2, animate,interval=200)
 root.mainloop()
