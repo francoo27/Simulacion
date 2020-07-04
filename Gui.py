@@ -270,16 +270,22 @@ def animate(i):
         xList.append(simulacion.clock)
         yList.append(len(simulacion.queue))
         yList2.append(simulacion.timeServiceacumulated)
+
         a.clear()
-        a.plot(xList,yList)
         b.clear()
-        b.plot(xList,yList2,color= 'b')
+        a.plot(xList,yList)
         a.axhline(y=simulacion.getMeanOfClientsInQueue(), color="black", linestyle=":")
+        a.set_ylabel('Clientes en cola')
+        a.set_xlabel('Tiempo')
+        b.plot(xList,yList2,color= 'b')
+        b.set_ylabel('Tiempo acumulado')
+        b.set_xlabel('Tiempo')
+
         b.axhline(y=simulacion.getMeanOfServerUtilization(), color="black", linestyle=":")
 
 def changeSimState(button,scaleMidTimeArrival,scaleMidTimeService):
     global simStopped
-    simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
+    clockTimeChangeValuesAdd()
     if(simStopped):
         button['text'] = "Parar"
         button['bg'] = "red"
@@ -293,7 +299,14 @@ def changeSimState(button,scaleMidTimeArrival,scaleMidTimeService):
         scaleMidTimeArrival['state'] = "active"
         button['bg'] = "green"
         simStopped = True
-        
+
+def clockTimeChangeValuesAdd():
+    global clockTimeChangeValues,simulacion
+    print(clockTimeChangeValues)
+    if len(clockTimeChangeValues)>1:
+        clockTimeChangeValues.append(clockTimeChangeValues[-1]+ simulacion.clock )
+    else:
+        clockTimeChangeValues.append(simulacion.clock )
 def restartSimulation():
     global a , b , simulacion
     simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
@@ -327,6 +340,13 @@ a = figure.add_subplot(111)
 figure2 = Figure(figsize=(5, 4), dpi=100)
 b = figure2.add_subplot(111)
 
+figure3 = Figure(figsize=(5, 4), dpi=100)
+c = figure3.add_subplot(111)
+
+figure4 = Figure(figsize=(5, 4), dpi=100)
+d = figure4.add_subplot(111)
+
+
 xList = []
 yList = []
 yList2 = []
@@ -354,7 +374,7 @@ leftFrame.pack( side = tk.LEFT )
 centerFrame = Frame(root)
 centerFrame.pack( side = tk.LEFT )
 
-rightFrame = Frame(root)
+rightFrame = Frame(root,bg="red")
 rightFrame.pack( side = tk.LEFT )
 
 topLeftFrame = Frame(leftFrame)
@@ -362,6 +382,12 @@ topLeftFrame.pack(side=tk.TOP)
 
 bottomLeftFrame = Frame(leftFrame)
 bottomLeftFrame.pack(side=tk.BOTTOM)
+
+topRightFrame = Frame(rightFrame,bg="red")
+topRightFrame.pack(side=tk.TOP)
+
+bottomRightFrame = Frame(rightFrame)
+bottomRightFrame.pack(side=tk.BOTTOM)
 
 
 RestartSimulatioButton = tk.Button(centerFrame, text ="Reiniciar", command = restartSimulation)
@@ -387,6 +413,19 @@ canvas2 = FigureCanvasTkAgg(figure2, bottomLeftFrame)
 toolbar2 = NavigationToolbar2Tk(canvas2, bottomLeftFrame)
 toolbar2.update()
 canvas2.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
+
+canvas3 = FigureCanvasTkAgg(figure3, topRightFrame)
+toolbar3 = NavigationToolbar2Tk(canvas3, topRightFrame)
+toolbar3.update()
+canvas3.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+canvas4 = FigureCanvasTkAgg(figure4, bottomRightFrame)
+toolbar4 = NavigationToolbar2Tk(canvas4, bottomRightFrame)
+toolbar4.update()
+canvas4.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+
+
 
 ani = animation.FuncAnimation(figure, animate,interval=200)
 ani2 = animation.FuncAnimation(figure2, animate,interval=200)
