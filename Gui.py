@@ -112,7 +112,7 @@ class Sim:
             self.tsAcuminT.append(self.timeServiceacumulated)            
 
     
-    def departure(self):          
+    def departure(self):
         #Pregunto si hay clientes en cola 
         if self.numberOfClientsInQueue > 0:
             #Tiempo del próximo evento partida
@@ -152,7 +152,10 @@ class Sim:
             self.clockinT.append(self.clock)
             self.clientQueueinT.append(self.numberOfClientsInQueue)
             self.tsAcuminT.append(self.timeServiceacumulated)
-    
+    def changeMidTimeArrivalValue(self,value):
+        self.midTimeArrivals = float(value)
+    def changeMidTimeServiceValue(self,value):
+        self.midTimeService = float(value)
     #Número promedio de clientes en cola
     def getMeanOfClientsInQueue(self):
         if self.clock !=0:
@@ -274,29 +277,47 @@ def animate(i):
         a.axhline(y=simulacion.getMeanOfClientsInQueue(), color="black", linestyle=":")
         b.axhline(y=simulacion.getMeanOfServerUtilization(), color="black", linestyle=":")
 
-def changeSimState(button):
+def changeSimState(button,scaleMidTimeArrival,scaleMidTimeService):
     global simStopped
+    simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
     if(simStopped):
         button['text'] = "Parar"
+        button['bg'] = "red"
+        button['fg'] = "white"
         simStopped = False
+        scaleMidTimeService['state'] = "disabled"
+        scaleMidTimeArrival['state'] = "disabled"
     else:
         button['text'] = "Iniciar"
+        scaleMidTimeService['state'] = "active"
+        scaleMidTimeArrival['state'] = "active"
+        button['bg'] = "green"
         simStopped = True
+        
 def restartSimulation():
-    global a
-    global b
-    global simulacion 
-    simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
+    global a , b , simulacion
+    simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
     a.clear()
     b.clear()
     yList.clear()
     xList.clear()
     yList2.clear()
+    clockTimeChangeValues.clear()
 
-def changeScale(value):
-    simulacion.midTimeArrivals = float(value)
-    print(simulacion.midTimeArrivals)
+def changeMidTimeArrivalScale(value):
+    global simulacion
+    midTimeArrival = float(value)
+    simulacion.changeMidTimeArrivalValue(value)
+
+def changeMidTimeServiceScale(value):
+    global simulacion
+    midTimeService = float(value)
+    simulacion.changeMidTimeServiceValue(value)
+
 ### GUI VARS
+midTimeArrival = 8.0
+midTimeService = 9.0
+
 simStopped = True
 
 root = tk.Tk()
@@ -309,10 +330,11 @@ b = figure2.add_subplot(111)
 xList = []
 yList = []
 yList2 = []
+clockTimeChangeValues = []
 ### GUI VARS
 
 
-simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
+simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
 
 
 
@@ -344,15 +366,17 @@ bottomLeftFrame.pack(side=tk.BOTTOM)
 
 RestartSimulatioButton = tk.Button(centerFrame, text ="Reiniciar", command = restartSimulation)
 RestartSimulatioButton.pack()
-StateSimulationButton = tk.Button(centerFrame, text ="Iniciar", command = lambda: changeSimState(StateSimulationButton))
+
+StateSimulationButton = tk.Button(centerFrame, text ="Iniciar", command = lambda: changeSimState(StateSimulationButton,ScaleMidTimeArrival,ScaleMidTimeService))
 StateSimulationButton.pack()
 
+ScaleMidTimeArrival = Scale( centerFrame, variable = midTimeArrival ,from_ = 0.1 , to = 0.98, digits =2 , resolution = 0.1,command =changeMidTimeArrivalScale,state="normal",label="Tiempo Medio Arribos")
+ScaleMidTimeArrival.pack(anchor="e")
+ScaleMidTimeArrival.set(midTimeArrival)
 
-Scalevar = DoubleVar().set(0.5)
-Scale = Scale( centerFrame, variable = Scalevar ,from_ = 0.1 , to = 0.98, digits = 3, resolution = 0.01,command =changeScale)
-Scale.pack(anchor="n")
-
-
+ScaleMidTimeService = Scale( centerFrame, variable = midTimeService ,from_ = 0.1 , to = 0.98, digits =2 , resolution = 0.1,command =changeMidTimeServiceScale,state="normal",label="Tiempo Medio Servicio")
+ScaleMidTimeService.pack(anchor="w")
+ScaleMidTimeService.set(midTimeService)
 
 canvas = FigureCanvasTkAgg(figure, topLeftFrame)
 toolbar = NavigationToolbar2Tk(canvas, topLeftFrame)
