@@ -207,6 +207,17 @@ def inputNumber(message):
        return userInput 
        break      
 
+def inputFloat(message):
+  while True:
+    try:
+       userInput = float(input(message))       
+    except ValueError:
+       print("No es un entero , porfavor ingrese nuevamente")
+       continue
+    else:
+       return userInput 
+       break        
+
 def plotClientsInQueue(simulation):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=simulation.clockinT, y=simulation.clientQueueinT,
@@ -249,11 +260,11 @@ def main(simulacion):
             break
 
 
-def runSimulations(count):
+def runSimulations(count,tma,tms):
     i=0
     while i < count:
         a=i
-        simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,7.0,9.0)
+        simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,tma,tms)
         main(simulacion)
         simulaciones.append(simulacion)
         i+=1
@@ -262,7 +273,7 @@ def runSimulations(count):
         print('Promedio de utilizacion del servidor:', sim.getMeanOfServerUtilization())        
         print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
 
-runSimulations(inputNumber("Ingrese el numero de simulaciones: "))
+runSimulations(inputNumber("Ingrese el numero de simulaciones: "),inputFloat("Ingrese Tasa media de Arribos: "),inputFloat("Ingrese Tasa media de Servicio: "))
 
 
 

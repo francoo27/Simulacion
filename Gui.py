@@ -166,7 +166,7 @@ class Sim:
             average_num_of_queued_costumers = 0
             return average_num_of_queued_costumers
     def __repr__(self):
-        return "<Clock:%s \n Clientes en cola:%s>" % (self.clock, self.numberOfClientsInQueue)   
+        return "Clock:%s \nClientes en cola:%s \nLista de eventos: [ %s , %s ]\n" % (self.clock, self.numberOfClientsInQueue,truncate(self.eventList[0],3),truncate(self.eventList[1],3))   
     
     # Utilización promedio del servidor
     def getMeanOfServerUtilization(self):
