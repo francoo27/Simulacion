@@ -47,6 +47,7 @@ class Sim:
         self.clientQueueinT = []
         self.clockinT = []
         self.tsAcuminT = []
+        self.timeInSistem = []
         #Tiempo del primer arribo
         self.eventList.append(np.random.exponential(1/self.midTimeArrivals))
         self.simulationEnded = False
@@ -64,7 +65,7 @@ class Sim:
 
     def arrival(self):
         #Todo arribo desencadena un nuevo arribo
-        self.eventList[0] = self.clock + np.random.exponential(1/self.midTimeArrivals)
+        self.eventList[0] = self.clock + np.random.exponential(1/self.midTimeArrivals)    
         #Pregunto si el servidor está disponible
         if self.serverEstatus == SERVER_STATUS.DISPONIBLE.value:
 
@@ -123,6 +124,8 @@ class Sim:
             #Decremento la cantidad de clientes en cola en uno
             self.numberOfClientsInQueue -= 1
 
+            self.timeInSistem.append(self.clock - self.queue[0])
+
             #Voy a desplazar a los valores de la cola un lugar hacia arriba
             self.queue.pop(0)
 
@@ -171,6 +174,14 @@ class Sim:
             average_costumers_delay = 0
             return average_costumers_delay
 
+    def getMeanOfClientsInSistem(self):
+        acum = 0
+        if len(self.timeInSistem) != 0:
+            for e in self.timeInSistem:
+                acum += e
+            return acum / len(self.timeInSistem)
+        else:
+            return 0
 
 def getArrayFilledWithSecuencialNumbers(maxValue):
     arr = [0] * ( maxValue + 1 )
@@ -248,6 +259,34 @@ def plotServerPerformance(tsAcuminT, clockinT):
     plt.xlabel('tiempo')
     plt.show()
 
+def plotServerPerformance(simulaciones):
+    lda=simulaciones[0].midTimeArrivals
+    mu=simulaciones[0].midTimeService
+    for sim in simulaciones:
+        uti = []
+        for i in range(len(sim.clockinT)):
+            uti.append(sim.tsAcuminT[i]/sim.clockinT[i]  if sim.tsAcuminT[i]/sim.clockinT[i] <=1 else 1)
+        plt.title('Utilización del servidor')
+        plt.plot(sim.clockinT,uti)
+    plt.ylabel('Utilización del servidor')
+    plt.xlabel('Tiempo')
+    plt.axhline(y=lda/mu, color="black", linestyle=":")
+    plt.show()    
+
+def meanOfClientsinQueue(simulaciones):
+    lda=simulaciones[0].midTimeArrivals
+    mu=simulaciones[0].midTimeService
+    for sim in simulaciones:
+        media = []
+        # for i in range(len(sim.clientQueueinT)):
+        #     media.append(sim.clientQueueinT[i]/sim.clockinT[i])     
+        plt.plot(sim.clockinT,sim.clientQueueinT)
+    plt.title('Clientes en cola en tiempo t')
+    plt.ylabel('Numero Clientes')
+    plt.xlabel('Tiempo')
+    plt.axhline(y=(lda**2)/(mu * (mu-lda)), color="black", linestyle=":")
+    plt.show() 
+
 def main(simulacion):
     while ( (not simulacion.simulationEnded) or (simulacion.numberOfClientsInQueue != 0 ) or (simulacion.serverEstatus != SERVER_STATUS.DISPONIBLE.value)):
         simulacion.getTimeEvent()
@@ -255,7 +294,7 @@ def main(simulacion):
             simulacion.arrival()
         else:
             simulacion.departure()
-        if (simulacion.clock > 500):
+        if (simulacion.clock > 100):
             simulacion.simulationEnded = True
             break
 
@@ -272,7 +311,9 @@ def runSimulations(count,tma,tms):
         print('Cantidad promedio de clientes en cola:', sim.getMeanOfClientsInQueue())
         print('Promedio de utilizacion del servidor:', sim.getMeanOfServerUtilization())        
         print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
-
+        print(sim.getMeanOfClientsInSistem())
+    plotServerPerformance(simulaciones)
+    meanOfClientsinQueue(simulaciones)
 runSimulations(inputNumber("Ingrese el numero de simulaciones: "),inputFloat("Ingrese Tasa media de Arribos: "),inputFloat("Ingrese Tasa media de Servicio: "))
 
 
