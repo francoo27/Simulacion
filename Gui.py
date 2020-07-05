@@ -17,6 +17,7 @@ from matplotlib import pyplot as plt
 from enum import Enum
 from pprint import pprint
 import numpy as np
+import math as mt
 
 class SERVER_STATUS(Enum):
     DISPONIBLE = 0
@@ -220,6 +221,11 @@ def inputNumber(message):
        return userInput 
        break      
 
+def truncate(number, digits) -> float:
+    stepper = 10.0 ** digits
+    return mt.trunc(stepper * number) / stepper
+
+
 def plotClientsInQueue(simulation):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=simulation.clockinT, y=simulation.clientQueueinT,
@@ -267,10 +273,13 @@ def animate(i):
     global simulacion
     if (not simStopped):
         main(simulacion)
+    
         xList.append(simulacion.clock)
         yList.append(len(simulacion.queue))
         yList2.append(simulacion.timeServiceacumulated)
 
+        ClockValueLabel['text'] = (str(truncate(simulacion.clock,3)))
+        QueueValueLabel['text'] = (str(simulacion.numberOfClientsInQueue))
         a.clear()
         b.clear()
         a.plot(xList,yList)
@@ -425,6 +434,20 @@ toolbar4 = NavigationToolbar2Tk(canvas4, bottomRightFrame)
 toolbar4.update()
 canvas4.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
+
+centerLeftFrame = Frame(centerFrame)
+centerLeftFrame.pack( side = tk.LEFT )
+ClockLabel = Label(centerLeftFrame, text="Clock:")
+ClockLabel.pack(side=tk.LEFT)
+ClockValueLabel = Label(centerLeftFrame, text=simulacion.clock)
+ClockValueLabel.pack(side=tk.RIGHT)
+
+centerRightFrame = Frame(centerFrame)
+centerRightFrame.pack( side = tk.RIGHT )
+QueueLabel = Label(centerRightFrame, text="People In Queue:")
+QueueLabel.pack(side=tk.LEFT)
+QueueValueLabel = Label(centerRightFrame, text=simulacion.clock)
+QueueValueLabel.pack(side=tk.RIGHT)
 
 
 ani = animation.FuncAnimation(figure, animate,interval=200)
