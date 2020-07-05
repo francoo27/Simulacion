@@ -313,7 +313,6 @@ def changeSimState(button,scaleMidTimeArrival,scaleMidTimeService):
 
 def clockTimeChangeValuesAdd():
     global clockTimeChangeValues,simulacion
-    print(clockTimeChangeValues)
     if len(clockTimeChangeValues)>1:
         clockTimeChangeValues.append(clockTimeChangeValues[-1]+ simulacion.clock )
     else:
@@ -380,13 +379,14 @@ simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0
 
 
 leftFrame = Frame(root)
-leftFrame.pack( side = tk.LEFT )
+leftFrame.pack(side = tk.LEFT)
 
 centerFrame = Frame(root)
-centerFrame.pack( side = tk.LEFT )
-
-rightFrame = Frame(root,bg="red")
-rightFrame.pack( side = tk.LEFT )
+centerFrame.pack(side = tk.LEFT)
+centerBottonFrame = Frame(centerFrame)
+centerBottonFrame.pack(side = tk.BOTTOM)
+rightFrame = Frame(root)
+rightFrame.pack(side = tk.LEFT)
 
 topLeftFrame = Frame(leftFrame)
 topLeftFrame.pack(side=tk.TOP)
@@ -394,7 +394,7 @@ topLeftFrame.pack(side=tk.TOP)
 bottomLeftFrame = Frame(leftFrame)
 bottomLeftFrame.pack(side=tk.BOTTOM)
 
-topRightFrame = Frame(rightFrame,bg="red")
+topRightFrame = Frame(rightFrame)
 topRightFrame.pack(side=tk.TOP)
 
 bottomRightFrame = Frame(rightFrame)
@@ -408,11 +408,11 @@ StateSimulationButton = tk.Button(centerFrame, text ="Iniciar", command = lambda
 StateSimulationButton.pack()
 
 ScaleMidTimeArrival = Scale( centerFrame, variable = midTimeArrival ,from_ = 0.1 , to = 0.98, digits =2 , resolution = 0.1,command =changeMidTimeArrivalScale,state="normal",label="Tiempo Medio Arribos")
-ScaleMidTimeArrival.pack(anchor="e")
+ScaleMidTimeArrival.pack(side=tk.LEFT,anchor="e")
 ScaleMidTimeArrival.set(midTimeArrival)
 
 ScaleMidTimeService = Scale( centerFrame, variable = midTimeService ,from_ = 0.1 , to = 0.98, digits =2 , resolution = 0.1,command =changeMidTimeServiceScale,state="normal",label="Tiempo Medio Servicio")
-ScaleMidTimeService.pack(anchor="w")
+ScaleMidTimeService.pack(side=tk.RIGHT,anchor="w")
 ScaleMidTimeService.set(midTimeService)
 
 canvas = FigureCanvasTkAgg(figure, topLeftFrame)
@@ -439,8 +439,8 @@ canvas4.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
 
 
-SimulationValuesCanvas = Canvas(centerFrame, width=400, height=300, bg = '#fbfbfb')
-SimulationValuesCanvas.pack()
+SimulationValuesCanvas = Canvas(centerBottonFrame, width=400, height=300, bg = '#fbfbfb')
+SimulationValuesCanvas.pack(side=tk.BOTTOM)
 SimulationText = SimulationValuesCanvas.create_text(1,10,anchor="nw")
 SimulationValuesCanvas.itemconfig(SimulationText, text="--",fill="black",font="Consolas")
 # SimulationValuesCanvas.insert(SimulationText, 5, "new ")
