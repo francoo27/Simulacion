@@ -15,10 +15,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from matplotlib import pyplot as plt
 from enum import Enum
-from pprint import pprint
+import pprint as pprint
 import numpy as np
 import math as mt
-
+from io import StringIO as io
 class SERVER_STATUS(Enum):
     DISPONIBLE = 0
     OCUPADO = 1
@@ -165,7 +165,8 @@ class Sim:
         else:
             average_num_of_queued_costumers = 0
             return average_num_of_queued_costumers
-        
+    def __repr__(self):
+        return "<Clock:%s \n Clientes en cola:%s>" % (self.clock, self.numberOfClientsInQueue)   
     
     # Utilización promedio del servidor
     def getMeanOfServerUtilization(self):
@@ -278,8 +279,6 @@ def animate(i):
         yList.append(len(simulacion.queue))
         yList2.append(simulacion.timeServiceacumulated)
 
-        ClockValueLabel['text'] = (str(truncate(simulacion.clock,3)))
-        QueueValueLabel['text'] = (str(simulacion.numberOfClientsInQueue))
         a.clear()
         b.clear()
         a.plot(xList,yList)
@@ -290,6 +289,9 @@ def animate(i):
         b.set_ylabel('Tiempo acumulado')
         b.set_xlabel('Tiempo')
 
+        SimulationValuesCanvas.delete("all")
+        SimulationText = SimulationValuesCanvas.create_text(1,10,anchor="nw")
+        SimulationValuesCanvas.itemconfig(SimulationText, text=simulacion.__repr__(),fill="black",font="Consolas")
         b.axhline(y=simulacion.getMeanOfServerUtilization(), color="black", linestyle=":")
 
 def changeSimState(button,scaleMidTimeArrival,scaleMidTimeService):
@@ -435,20 +437,13 @@ toolbar4.update()
 canvas4.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
 
-centerLeftFrame = Frame(centerFrame)
-centerLeftFrame.pack( side = tk.LEFT )
-ClockLabel = Label(centerLeftFrame, text="Clock:")
-ClockLabel.pack(side=tk.LEFT)
-ClockValueLabel = Label(centerLeftFrame, text=simulacion.clock)
-ClockValueLabel.pack(side=tk.RIGHT)
 
-centerRightFrame = Frame(centerFrame)
-centerRightFrame.pack( side = tk.RIGHT )
-QueueLabel = Label(centerRightFrame, text="People In Queue:")
-QueueLabel.pack(side=tk.LEFT)
-QueueValueLabel = Label(centerRightFrame, text=simulacion.clock)
-QueueValueLabel.pack(side=tk.RIGHT)
 
+SimulationValuesCanvas = Canvas(centerFrame, width=400, height=300, bg = '#fbfbfb')
+SimulationValuesCanvas.pack()
+SimulationText = SimulationValuesCanvas.create_text(1,10,anchor="nw")
+SimulationValuesCanvas.itemconfig(SimulationText, text="--",fill="black",font="Consolas")
+# SimulationValuesCanvas.insert(SimulationText, 5, "new ")
 
 ani = animation.FuncAnimation(figure, animate,interval=200)
 ani2 = animation.FuncAnimation(figure2, animate,interval=200)
