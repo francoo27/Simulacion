@@ -166,7 +166,16 @@ class Sim:
             average_num_of_queued_costumers = 0
             return average_num_of_queued_costumers
     def __repr__(self):
-        return "Clock:%s \nClientes en cola:%s \nLista de eventos: [ %s , %s ]\n" % (self.clock, self.numberOfClientsInQueue,truncate(self.eventList[0],3),truncate(self.eventList[1],3))   
+        return """Clock:%s 
+        \nClientes en cola:%s
+        \nEventos: [ %s , %s ]
+        \nProximo evento:%s
+        \nAreaDeQ:%s""" % (self.clock,
+         self.numberOfClientsInQueue,
+         truncate(self.eventList[0],3),
+         truncate(self.eventList[1],3),
+         "Arribo" if self.nextEvent == EVENT_TYPE.ARRRIBO.value else "Salida",
+         self.areaQ)   
     
     # Utilización promedio del servidor
     def getMeanOfServerUtilization(self):
@@ -271,23 +280,38 @@ def main(simulacion):
 
 ###GUI STUFF
 def animate(i):
-    global simulacion
+    global simulacion,maxClients
     if (not simStopped):
         main(simulacion)
     
         xList.append(simulacion.clock)
         yList.append(len(simulacion.queue))
         yList2.append(simulacion.timeServiceacumulated)
-
+        yList3.append(simulacion.getMeanOfServerUtilization() if simulacion.getMeanOfServerUtilization()<=1 else 1)
         a.clear()
         b.clear()
-        a.plot(xList,yList)
-        a.axhline(y=simulacion.getMeanOfClientsInQueue(), color="black", linestyle=":")
+        a.plot(xList,yList,color='green')
+        mediaClientes =simulacion.getMeanOfClientsInQueue()
+        a.annotate('Media de clientes', xy=(float(simulacion.clock), mediaClientes),  xycoords='data',
+            horizontalalignment='right', verticalalignment='top',
+            )
+        a.axhline(y=mediaClientes, color="black", linestyle=":")
         a.set_ylabel('Clientes en cola')
         a.set_xlabel('Tiempo')
         b.plot(xList,yList2,color= 'b')
         b.set_ylabel('Tiempo acumulado')
         b.set_xlabel('Tiempo')
+
+        c.plot(xList,yList3,color= 'k')
+        c.set_ylabel('Utilización del servidor')
+        c.set_xlabel('Tiempo')
+
+        a.annotate('Maximo', xy=(float(simulacion.clock), maxClients),  xycoords='data',
+            horizontalalignment='right', verticalalignment='top',
+            )
+        a.axhline(y=maxClients, color="black", linestyle=":")
+
+
 
         SimulationValuesCanvas.delete("all")
         SimulationText = SimulationValuesCanvas.create_text(1,10,anchor="nw")
@@ -322,9 +346,11 @@ def restartSimulation():
     simulacion = Sim(0,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,midTimeArrival,midTimeService)
     a.clear()
     b.clear()
+    c.clear()
     yList.clear()
     xList.clear()
     yList2.clear()
+    yList3.clear()
     clockTimeChangeValues.clear()
 
 def changeMidTimeArrivalScale(value):
@@ -340,7 +366,7 @@ def changeMidTimeServiceScale(value):
 ### GUI VARS
 midTimeArrival = 8.0
 midTimeService = 9.0
-
+maxClients = 15
 simStopped = True
 
 root = tk.Tk()
@@ -360,6 +386,7 @@ d = figure4.add_subplot(111)
 xList = []
 yList = []
 yList2 = []
+yList3 = []
 clockTimeChangeValues = []
 ### GUI VARS
 
@@ -445,6 +472,7 @@ SimulationText = SimulationValuesCanvas.create_text(1,10,anchor="nw")
 SimulationValuesCanvas.itemconfig(SimulationText, text="--",fill="black",font="Consolas")
 # SimulationValuesCanvas.insert(SimulationText, 5, "new ")
 
-ani = animation.FuncAnimation(figure, animate,interval=200)
-ani2 = animation.FuncAnimation(figure2, animate,interval=200)
+ani = animation.FuncAnimation(figure, animate,interval=400)
+ani2 = animation.FuncAnimation(figure2, animate,interval=400)
+ani3 = animation.FuncAnimation(figure3, animate,interval=400)
 root.mainloop()
