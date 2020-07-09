@@ -27,7 +27,8 @@ class Sim:
                 numberOfClientsCompletedWithDelay,
                 number,
                 midTimeArrivals,
-                midTimeService): 
+                midTimeService,
+                mcq): 
         self.codigo=codigo or 0
         self.serverEstatus = serverEstatus or SERVER_STATUS.DISPONIBLE.value
         self.nextEvent = nextEvent or ""
@@ -43,11 +44,18 @@ class Sim:
         self.midTimeService = midTimeService or 0.0
         self.eventList = []
         self.queue = []
+       
+        self.maxClientsInQueue = mcq or 0
+        self.clientsDenied = 0
+        
+
         #Listas para generar las gráficas
         self.clientQueueinT = []
         self.clockinT = []
         self.tsAcuminT = []
         self.timeInSistem = []
+
+        self.clientsDeniedinT = []
         #Tiempo del primer arribo
         self.eventList.append(np.random.exponential(1/self.midTimeArrivals))
         self.simulationEnded = False
@@ -85,22 +93,30 @@ class Sim:
             self.clockinT.append(self.clock)
             self.clientQueueinT.append(self.numberOfClientsInQueue)
             self.tsAcuminT.append(self.timeServiceacumulated)
+            self.clientsDeniedinT.append(self.clientsDenied)
             
         else:
             #Calculo área bajo Q(t) desde el momento actual del reloj hacia atrás (tiempo del último evento)
             self.areaQ += (self.numberOfClientsInQueue * (self.clock - self.timeOfLastEvent))     
 
-            #Incremento la cantidad de clientes en cola en 1       
-            self.numberOfClientsInQueue +=1
+            if self.numberOfClientsInQueue < self.maxClientsInQueue: 
 
-            #Guardo el valor del reloj en la posición "Nro de Clientes en cola" para saber
-            #cuando llegó el cliente a la cola y más adelante calcular la demora
-            self.queue.append(self.clock)
+                #Incremento la cantidad de clientes en cola en 1       
+                self.numberOfClientsInQueue +=1
+
+                #Guardo el valor del reloj en la posición "Nro de Clientes en cola" para saber
+                #cuando llegó el cliente a la cola y más adelante calcular la demora
+                self.queue.append(self.clock)
+
+            else:
+
+                self.clientsDenied += 1            
 
             #--------- Gráficas---------------------
             self.clockinT.append(self.clock)
             self.clientQueueinT.append(self.numberOfClientsInQueue)
-            self.tsAcuminT.append(self.timeServiceacumulated)            
+            self.tsAcuminT.append(self.timeServiceacumulated)
+            self.clientsDeniedinT.append(self.clientsDenied)
 
     
     def departure(self):          
@@ -133,6 +149,7 @@ class Sim:
             self.clockinT.append(self.clock)
             self.clientQueueinT.append(self.numberOfClientsInQueue)
             self.tsAcuminT.append(self.timeServiceacumulated)
+            self.clientsDeniedinT.append(self.clientsDenied)
            
         else:
             #Si no hay clientes en la cola, establezco el estado del servidor en "Disponible"
@@ -145,6 +162,7 @@ class Sim:
             self.clockinT.append(self.clock)
             self.clientQueueinT.append(self.numberOfClientsInQueue)
             self.tsAcuminT.append(self.timeServiceacumulated)
+            self.clientsDeniedinT.append(self.clientsDenied)
     
     #Número promedio de clientes en cola
     def getMeanOfClientsInQueue(self):
@@ -182,6 +200,8 @@ class Sim:
             return acum / len(self.timeInSistem)
         else:
             return 0
+    # def meanOfDeniedClients(self):
+        
 
 def getArrayFilledWithSecuencialNumbers(maxValue):
     arr = [0] * ( maxValue + 1 )
@@ -205,7 +225,6 @@ def plotNumberOfClientsInQueue(clientQueueinT):
     plt.xticks(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)))
     plt.bar(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)),getCount(clientQueueinT))
     plt.show()
-
 
 def inputNumber(message):
   while True:
@@ -271,7 +290,15 @@ def plotServerPerformance(simulaciones):
     plt.ylabel('Utilización del servidor')
     plt.xlabel('Tiempo')
     plt.axhline(y=lda/mu, color="black", linestyle=":")
-    plt.show()    
+    plt.show()
+
+def  plotClientsDenied(simulaciones):
+    for sim in simulaciones:       
+        plt.plot(sim.clockinT,sim.clientsDeniedinT)
+    plt.title('Cantidad de denegaciones de servicio')
+    plt.ylabel('Clientes denegados')
+    plt.xlabel('Tiempo')  
+    plt.show()   
 
 def meanOfClientsinQueue(simulaciones):
     lda=simulaciones[0].midTimeArrivals
@@ -299,22 +326,24 @@ def main(simulacion):
             break
 
 
-def runSimulations(count,tma,tms):
+def runSimulations(count,tma,tms,mcq):
     i=0
     while i < count:
         a=i
-        simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,tma,tms)
+        simulacion = Sim(a,SERVER_STATUS.DISPONIBLE.value,EVENT_TYPE.UNKNOWN.value,0.0,0.0,0.0,0.0,0.0,0.0,0,0,99999999,tma,tms,mcq)
         main(simulacion)
         simulaciones.append(simulacion)
         i+=1
     for sim in simulaciones:
-        print('Cantidad promedio de clientes en cola:', sim.getMeanOfClientsInQueue())
-        print('Promedio de utilizacion del servidor:', sim.getMeanOfServerUtilization())        
-        print('Tiempo promedio de demora de los clientes:', sim.getAverageCustomerDelay())
-        print(sim.getMeanOfClientsInSistem())
+        print("Medidas de rendimiento ".center(101,'='),'\n')
+        print(('Cantidad promedio de clientes en cola: '+ str((sim.getMeanOfClientsInQueue()))).center(100,' '))
+        print(('Promedio de utilizacion del servidor: '+ str(sim.getMeanOfServerUtilization())).center(100,' '))        
+        print(('Tiempo promedio de demora de los clientes: '+ str(sim.getAverageCustomerDelay())).center(100,' '))
+        print(('Tiempo promedio de clientes en el sistema: '+ str((sim.getMeanOfClientsInSistem()))).center(100, ' '))
     plotServerPerformance(simulaciones)
     meanOfClientsinQueue(simulaciones)
-runSimulations(inputNumber("Ingrese el numero de simulaciones: "),inputFloat("Ingrese Tasa media de Arribos: "),inputFloat("Ingrese Tasa media de Servicio: "))
+    plotClientsDenied(simulaciones)
+runSimulations(inputNumber("Ingrese el numero de simulaciones: "),inputFloat("Ingrese Tasa media de Arribos: "),inputFloat("Ingrese Tasa media de Servicio: "),inputNumber("Ingrese la cantidad maxima de clientes en cola: "))
 
 
 
