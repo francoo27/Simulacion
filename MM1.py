@@ -3,8 +3,8 @@ from matplotlib import pyplot as plt
 from enum import Enum
 from pprint import pprint
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+# import plotly.express as px
+# import plotly.graph_objects as go
 
 simulaciones = []
 
@@ -44,16 +44,22 @@ class Sim:
         self.midTimeService = midTimeService or 0.0
         self.eventList = []
         self.queue = []
+
+        self.totalOfClients = 0
+        self.clientServed = 0  
+        self.probDenegation = 0
        
         self.maxClientsInQueue = mcq or 0
         self.clientsDenied = 0
-        
+
+        self.clientsInSystem = 0
 
         #Listas para generar las gráficas
         self.clientQueueinT = []
         self.clockinT = []
         self.tsAcuminT = []
-        self.timeInSistem = []
+        self.timeInSistem = []   
+        self.clientsInSysteminT = []
 
         self.clientsDeniedinT = []
         #Tiempo del primer arribo
@@ -88,17 +94,12 @@ class Sim:
 
             #Actualizo la cantidad de clientes que completaron la demora
             self.numberOfClientsCompletedWithDelay += 1
-
-            #-----------Gráficas---------------
-            self.clockinT.append(self.clock)
-            self.clientQueueinT.append(self.numberOfClientsInQueue)
-            self.tsAcuminT.append(self.timeServiceacumulated)
-            self.clientsDeniedinT.append(self.clientsDenied)
             
         else:
             #Calculo área bajo Q(t) desde el momento actual del reloj hacia atrás (tiempo del último evento)
             self.areaQ += (self.numberOfClientsInQueue * (self.clock - self.timeOfLastEvent))     
 
+            #Si el cliente supera la cola en denegado
             if self.numberOfClientsInQueue < self.maxClientsInQueue: 
 
                 #Incremento la cantidad de clientes en cola en 1       
@@ -112,12 +113,20 @@ class Sim:
 
                 self.clientsDenied += 1            
 
-            #--------- Gráficas---------------------
-            self.clockinT.append(self.clock)
-            self.clientQueueinT.append(self.numberOfClientsInQueue)
-            self.tsAcuminT.append(self.timeServiceacumulated)
-            self.clientsDeniedinT.append(self.clientsDenied)
+        if self.numberOfClientsInQueue == 0:
+            if self.serverEstatus == SERVER_STATUS.DISPONIBLE.value :
+                self.clientsInSystem = 0
+            if self.serverEstatus == SERVER_STATUS.OCUPADO.value:                
+                self.clientsInSystem = 1
+        else:
+            self.clientsInSystem = self.numberOfClientsInQueue + 1
 
+        #--------- Gráficas---------------------
+        self.clockinT.append(self.clock)
+        self.clientQueueinT.append(self.numberOfClientsInQueue)
+        self.tsAcuminT.append(self.timeServiceacumulated)
+        self.clientsDeniedinT.append(self.clientsDenied)
+        self.clientsInSysteminT.append(self.clientsInSystem)
     
     def departure(self):          
         #Pregunto si hay clientes en cola 
@@ -145,11 +154,9 @@ class Sim:
             #Voy a desplazar a los valores de la cola un lugar hacia arriba
             self.queue.pop(0)
 
-            #----------- Gráfcias ----------------
-            self.clockinT.append(self.clock)
-            self.clientQueueinT.append(self.numberOfClientsInQueue)
-            self.tsAcuminT.append(self.timeServiceacumulated)
-            self.clientsDeniedinT.append(self.clientsDenied)
+            #Aumenta la cantidad de clientes atendidos para el calculo de prob de denegados
+            self.clientServed += 1        
+
            
         else:
             #Si no hay clientes en la cola, establezco el estado del servidor en "Disponible"
@@ -157,13 +164,24 @@ class Sim:
 
             #Forzar a que no haya partidas si no hay clientes atendiendo
             self.eventList[1] = 99999999
+            self.clientServed += 1  
 
-            #----------- Gráficas ----------------
-            self.clockinT.append(self.clock)
-            self.clientQueueinT.append(self.numberOfClientsInQueue)
-            self.tsAcuminT.append(self.timeServiceacumulated)
-            self.clientsDeniedinT.append(self.clientsDenied)
-    
+        if self.numberOfClientsInQueue == 0:
+            if self.serverEstatus == SERVER_STATUS.DISPONIBLE.value :
+                self.clientsInSystem = 0
+            if self.serverEstatus == SERVER_STATUS.OCUPADO.value:                
+                self.clientsInSystem = 1
+        else:
+            self.clientsInSystem = self.numberOfClientsInQueue + 1
+
+
+        #----------- Gráficas ----------------
+        self.clockinT.append(self.clock)
+        self.clientQueueinT.append(self.numberOfClientsInQueue)
+        self.tsAcuminT.append(self.timeServiceacumulated)
+        self.clientsDeniedinT.append(self.clientsDenied)
+        self.clientsInSysteminT.append(self.clientsInSystem)
+
     #Número promedio de clientes en cola
     def getMeanOfClientsInQueue(self):
         if self.clock !=0:
@@ -201,7 +219,27 @@ class Sim:
         else:
             return 0
     # def meanOfDeniedClients(self):
-        
+
+    def calculateTotalOfClientsAndProbDenegation(self):
+            self.totalOfClients = self.clientServed + self.numberOfClientsInQueue + self.clientsDenied  if self.serverEstatus == SERVER_STATUS.DISPONIBLE.value else self.clientServed + self.numberOfClientsInQueue + self.clientsDenied + 1
+            self.probDenegation = self.clientsDenied * 100 / self.totalOfClients
+
+    def plotNumberOfClientsSystem(self):
+    ## input clientQueueinT of instance of simulation
+        plt.xticks(getArrayFilledWithSecuencialNumbers(max(self.clientsInSysteminT)))
+        theoryBar = []
+        # for i in range (max(self.clientsInSysteminT)):
+        #     theoryBar.append(getProbabilityOfNinSystem(i,self.midTimeArrivals,self.midTimeService)*(self.))
+        # print(theoryBar)
+        plt.bar(getArrayFilledWithSecuencialNumbers(max(self.clientsInSysteminT)),getCount(self.clientsInSysteminT))
+        plt.show()    
+
+    def plotNumberOfClientsInQueueAndSistem(self):
+        ## input clientQueueinT of instance of simulation
+        plt.xticks(getArrayFilledWithSecuencialNumbers(max(self.clientsInSysteminT)))        
+        plt.bar(getArrayFilledWithSecuencialNumbers(max(self.clientsInSysteminT)),getCount(self.clientsInSysteminT))
+        plt.bar(getArrayFilledWithSecuencialNumbers(max(self.clientQueueinT)),getCount(self.clientQueueinT))
+        plt.show()    
 
 def getArrayFilledWithSecuencialNumbers(maxValue):
     arr = [0] * ( maxValue + 1 )
@@ -225,6 +263,11 @@ def plotNumberOfClientsInQueue(clientQueueinT):
     plt.xticks(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)))
     plt.bar(getArrayFilledWithSecuencialNumbers(max(clientQueueinT)),getCount(clientQueueinT))
     plt.show()
+
+
+
+def getProbabilityOfNinSystem(n,lda,mu):
+    return (1-(lda/mu))*(lda/mu)**n
 
 def inputNumber(message):
   while True:
@@ -304,9 +347,7 @@ def meanOfClientsinQueue(simulaciones):
     lda=simulaciones[0].midTimeArrivals
     mu=simulaciones[0].midTimeService
     for sim in simulaciones:
-        media = []
-        # for i in range(len(sim.clientQueueinT)):
-        #     media.append(sim.clientQueueinT[i]/sim.clockinT[i])     
+        media = []    
         plt.plot(sim.clockinT,sim.clientQueueinT)
     plt.title('Clientes en cola en tiempo t')
     plt.ylabel('Numero Clientes')
@@ -323,6 +364,7 @@ def main(simulacion):
             simulacion.departure()
         if (simulacion.clock > 100):
             simulacion.simulationEnded = True
+            simulacion.calculateTotalOfClientsAndProbDenegation()
             break
 
 
@@ -340,11 +382,11 @@ def runSimulations(count,tma,tms,mcq):
         print(('Promedio de utilizacion del servidor: '+ str(sim.getMeanOfServerUtilization())).center(100,' '))        
         print(('Tiempo promedio de demora de los clientes: '+ str(sim.getAverageCustomerDelay())).center(100,' '))
         print(('Tiempo promedio de clientes en el sistema: '+ str((sim.getMeanOfClientsInSistem()))).center(100, ' '))
+        print(('Porcentage de clientes denegados: '+ str((sim.probDenegation))).center(100, ' '))
+        print('Clientes en cola: ',sim.numberOfClientsInQueue)
+        print('Clientes que fueron atendidos',sim.clientServed)
+        print('clientes denegados: ',sim.clientsDenied)  
     plotServerPerformance(simulaciones)
     meanOfClientsinQueue(simulaciones)
     plotClientsDenied(simulaciones)
 runSimulations(inputNumber("Ingrese el numero de simulaciones: "),inputFloat("Ingrese Tasa media de Arribos: "),inputFloat("Ingrese Tasa media de Servicio: "),inputNumber("Ingrese la cantidad maxima de clientes en cola: "))
-
-
-
-
