@@ -64,9 +64,10 @@ file1.close()
 rows = filestring.split(";")
 rowSplit = []
 counter = 0
+totalRows=len(rows)-1
 for row in rows:
     rowSplit = row.split(",")
-    if counter <= 99:
+    if counter < totalRows:
         iteracion = Iteracion(rowSplit[0],rowSplit[1],rowSplit[2],rowSplit[3],rowSplit[4],rowSplit[5],
                             rowSplit[6],rowSplit[7],rowSplit[8],rowSplit[9],rowSplit[10],rowSplit[11],
                             rowSplit[12],rowSplit[13],rowSplit[14],rowSplit[15],rowSplit[16],rowSplit[17],rowSplit[18])
@@ -80,10 +81,10 @@ meanArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 varArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 stdArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 intervalArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-meanArray = [ [0]*100 for i in range(18)]
+meanArray = [ [0]*totalRows for i in range(18)]
 counter = 0
 for iteracion in iteraciones:
-    if counter <= 99:
+    if counter < totalRows:
         meanArray[0][counter]=int(iteracion.cantidadProductos)
         meanArray[1][counter]=int(iteracion.cantidadServicios)
         meanArray[2][counter]=float(iteracion.colaturnoLongitud)
@@ -110,7 +111,7 @@ while counter <= 17:
     meanArrayResults[counter] = getMeanOfArray(meanArray[counter])
     varArrayResults[counter] = np.var(meanArray[counter])
     stdArrayResults[counter] = np.std(meanArray[counter])
-    intervalArrayResults[counter] = 1.833 * (mt.sqrt(varArrayResults[counter]/100))
+    intervalArrayResults[counter] = 1.833 * (mt.sqrt(varArrayResults[counter]/totalRows))
     counter+=1
     
 x.field_names = ["Medida", "Media", "Varianza", "Desviacion estandar","Intervalo de confianza"]

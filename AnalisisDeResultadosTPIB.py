@@ -84,7 +84,7 @@ intervalArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 meanArray = [ [0]*totalRows for i in range(18)]
 counter = 0
 for iteracion in iteraciones:
-    if counter <= 99:
+    if counter < totalRows:
         meanArray[0][counter]=int(iteracion.cantidadProductos)
         meanArray[1][counter]=int(iteracion.cantidadServicios)
         meanArray[2][counter]=float(iteracion.colaturnoLongitud)
