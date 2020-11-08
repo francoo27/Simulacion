@@ -111,7 +111,7 @@ while counter <= 17:
     meanArrayResults[counter] = getMeanOfArray(meanArray[counter])
     varArrayResults[counter] = np.var(meanArray[counter],None,None,None,1)
     stdArrayResults[counter] = np.std(meanArray[counter],None,None,None,1)
-    intervalArrayResults[counter] = 1.833 * (mt.sqrt(varArrayResults[counter]/totalRows))
+    intervalArrayResults[counter] = 1.660 * (mt.sqrt(varArrayResults[counter]/totalRows))
     counter+=1
     
 x.field_names = ["Medida", "Media", "Varianza", "Desviacion estandar","Intervalo de confianza"]
