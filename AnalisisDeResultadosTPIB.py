@@ -109,8 +109,8 @@ for iteracion in iteraciones:
 counter = 0
 while counter <= 17:
     meanArrayResults[counter] = getMeanOfArray(meanArray[counter])
-    varArrayResults[counter] = np.var(meanArray[counter])
-    stdArrayResults[counter] = np.std(meanArray[counter])
+    varArrayResults[counter] = np.var(meanArray[counter],None,None,None,1)
+    stdArrayResults[counter] = np.std(meanArray[counter],None,None,None,1)
     intervalArrayResults[counter] = 1.833 * (mt.sqrt(varArrayResults[counter]/totalRows))
     counter+=1
     
@@ -134,3 +134,6 @@ x.add_row(["colaVentanillaTimeout",meanArrayResults[15], varArrayResults[15], st
 x.add_row(["colaCubiculosTimeout",meanArrayResults[16], varArrayResults[16], stdArrayResults[16], intervalArrayResults[16]])
 x.add_row(["colaSelectTimeout",meanArrayResults[17], varArrayResults[17], stdArrayResults[17], intervalArrayResults[17]])
 print(x)
+file1 = open("IteracionesBProcesado.txt","w+") 
+file1.write(str(x))
+file1.close()
