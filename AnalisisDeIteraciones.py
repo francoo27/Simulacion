@@ -182,8 +182,8 @@ while i <= 17:
         varArrayResults[i] += mt.pow((n - meanArrayResults[i]),2)
     varArrayResults[i] = varArrayResults[i]/(totalRows*(totalRows-1))
     intervalArrayResults[i] = mt.sqrt(varArrayResults[i])
-    print("Z[N]:",meanArrayResults[i]," +- ",intervalArrayResults[i])
-    print("Z[N]:",meanArrayResults[i]," +- ",intervalArrayResults[i],file=file1)
+    print("Z[N]:",meanArrayResults[i]," +- ",intervalArrayResults[i],"  [",meanArrayResults[i]-intervalArrayResults[i],",",meanArrayResults[i]+intervalArrayResults[i],"]")
+    print("Z[N]:",meanArrayResults[i]," +- ",intervalArrayResults[i],"  [",meanArrayResults[i]-intervalArrayResults[i],",",meanArrayResults[i]+intervalArrayResults[i],"]",file=file1)
     i+=1
 
 
