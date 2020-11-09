@@ -96,47 +96,6 @@ for row in rows2:
     rowSplit = []
 
 meanArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-# varArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-# stdArrayResults = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-# count= 0
-# while count < totalRows:
-#     meanArray[0]+=float((float)(iteraciones[count].cantidadProductos) - (float)(iteraciones2[count].cantidadProductos))/totalRows
-#     meanArray[1]+=float((float)(iteraciones[count].cantidadServicios) - (float)(iteraciones2[count].cantidadServicios ))/totalRows
-#     meanArray[2]+=float((float)(iteraciones[count].colaturnoLongitud) - (float)(iteraciones2[count].colaturnoLongitud))/totalRows
-#     meanArray[3]+=float((float)(iteraciones[count].colaATMLongitud) - (float)(iteraciones2[count].colaATMLongitud))/totalRows
-#     meanArray[4]+=float((float)(iteraciones[count].colaVentanillaLongitud) - (float)(iteraciones2[count].colaVentanillaLongitud))/totalRows
-#     meanArray[5]+=float((float)(iteraciones[count].colaCubiculoLongitud) - (float)(iteraciones2[count].colaCubiculoLongitud))/totalRows
-#     meanArray[6]+=float((float)(iteraciones[count].colaSelectLongitud) - (float)(iteraciones2[count].colaSelectLongitud))/totalRows
-#     meanArray[7]+=float((float)(iteraciones[count].ATM1Utilizacion) - (float)(iteraciones2[count].ATM1Utilizacion))/totalRows
-#     meanArray[8]+=float((float)(iteraciones[count].ATM2Utilizacion) - (float)(iteraciones2[count].ATM2Utilizacion))/totalRows
-#     meanArray[9]+=float((float)(iteraciones[count].ATM3Utilizacion) - (float)(iteraciones2[count].ATM3Utilizacion))/totalRows
-#     meanArray[10]+=float((float)(iteraciones[count].ATM4Utilizacion) - (float)(iteraciones2[count].ATM4Utilizacion))/totalRows
-#     meanArray[11]+=float((float)(iteraciones[count].cantidadGenteQueTermino) - (float)(iteraciones2[count].cantidadGenteQueTermino))/totalRows
-#     meanArray[12]+=float((float)(iteraciones[count].cantidadRetroalimentacion) - (float)(iteraciones2[count].cantidadRetroalimentacion))/totalRows
-#     meanArray[13]+=float((float)(iteraciones[count].colaTurnoTimeout) - (float)(iteraciones2[count].colaTurnoTimeout))/totalRows
-#     meanArray[14]+=float((float)(iteraciones[count].colaATMTimeout) - (float)(iteraciones2[count].colaATMTimeout))/totalRows
-#     meanArray[15]+=float((float)(iteraciones[count].colaVentanillaTimeout) - (float)(iteraciones2[count].colaVentanillaTimeout))/totalRows
-#     meanArray[16]+=float((float)(iteraciones[count].colaCubiculosTimeout)- (float)(iteraciones2[count].colaCubiculosTimeout))/totalRows
-#     meanArray[17]+=float((float)(iteraciones[count].colaSelectTimeout) - (float)(iteraciones2[count].colaSelectTimeout))/totalRows
-#     count+=1
-
-
-
-# # Calculo de Zj
-# Zj = []
-# count = 0 
-# while count < totalRows:
-#     Zj = float((float)(iteraciones[count].cantidadProductos) - (float)(iteraciones2[count].cantidadProductos))
-
-# # Calculo de Zn
-
-# Zn = Zj / 100
-
-
-
-
-
-
 
 
 counta = 0
@@ -168,12 +127,6 @@ while counta < totalRows:
 
     counta+=1
 acum = 0
-# for n in meanArraye[0]:
-#     acum+=n    
-# acum = acum / 100
-# print(acum)
-
-# acum = (float)(statistics.mean(meanArrayToCalculate[0]))
 i=0
 file1 = open("IteracionesResultadoProcesado.txt","w+") 
 while i <= 17:
